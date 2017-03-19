@@ -1,4 +1,4 @@
-## Fundamentals – Installing and Using
+# Fundamentals – Installing and Using
 在前一章， 我们熟悉了 Vue.js 。我们已经在两个不同的程序中使用了它。 我们学习了如何在项目中应用 Vue.js。 我们实践了响应式的数据绑定。
 
 现在， 你可能会问自己： Vue 是怎样运作的？ 它又是如何在 数据模型 变化时快速响应 UI 变化的？ 你可能决定在项目中使用它， 想知道用不用遵循一些架构模式或者范例。 在本章我们将探索这些关键的概念， 理解隐藏在 Vue.js 背后的特性。 我们将分析所有安装 Vue.js 的方法， 同时为我们的方程式创建一个骨架， 然后在后续章节不断增强改进。 我们也会学习调试、 测试我们的方程式。
@@ -18,11 +18,13 @@
 你还记得我们是怎么创建 Vue 事例的吗？ 我们以关键字 new Vue({...}) 来创建实例。 你一定记得在配置项中， 我们可以吧数据对象传递给绑定的元素。 数据对象是我们的模型， 而 DOM 元素是 Vue 实例绑定的地方。
 
 ![](imgs/2-1.png)
+
 Vue 中的经典视图模型事例
 
 同时， 我们的 Vue 实例帮助我们把模型绑定到视图中， 反之亦然。 我们的方程式因此遵循着 Model-View-ViewModel(MVVM) 模式。
 
 ![](imgs/2-2.png)
+
 Model-View-ViewModel模式简化图
 
 我们的模型包含数据和一些基本逻辑， 视图对之响应。 视图模型控制数据绑定， 保证在模型数据的变化会迅速反应在视图中， 反之亦然。
@@ -107,6 +109,7 @@ update: function update(value) {
 所以呢， Vue.js 的响应式机制非常简单。 观察器被赋到所有指令和数据属性上， 然后在 *Object.defineProperty* 的 *set* 方法上， 依次通知更新每个 DOM 或数据。
 
 ![](imgs/2-5.png)
+
 数据对象到 DOM 间的数据流
 
 那些拥有指令的 **DOM** 元素都被附着上了监听器， 来依次通知更新每次调用的数据值。
@@ -202,11 +205,13 @@ var customComponent = Vue.extend({...})
 ```
 
 ![](imgs/2-6.png)
+
 Vue.js 中的自定义组件
 
 例如，把我们的购物列表拆分成组件。 如你所知， 我们的购物列表有三个基本部分： 列表项， 输入项， 标题变更项：
 
 ![](imgs/2-7.png)
+
 我们购物清单方程式的三个基本项
 
 我们可以把三个基本项变更为组件
@@ -321,6 +326,7 @@ var AddItemComponent = Vue.extend({
 我们需要这样在视图中使用这些组件呢？ 我们只需用组件名替代相应的标记标签。 看起来像这样：
 
 ![](imgs/2-8.png)
+
 组件化的购物清单
 
 第一个高亮区域我们将以 *<add-item-component></add-itemcomponent>*  标签来替换， 第二个拿 *<items-component></items-component>* 标签替换， 第三个拿 *<change-title-component></change-title-component>* 标签替换。 因此最终是这个样子的：
@@ -555,7 +561,7 @@ vue init simple 和 vue init webpack 生成的文件结构差别
 ## IDEs 的 Vue 插件
 这里有许多 Vue 语法高亮插件：
 
-![](2-13.png)
+![](imgs/2-13.png)
 
 
 ## 安装， 使用， 调试 Vue.js 方程式
@@ -871,7 +877,7 @@ $ npm run dev
 除了 Webpack 模板外，你还可以选择下面几种配置
 
 * webpack-simple： 精简版， Webpack + vue-loader ，适合快速原型
-* browserify： 完全版， Browserify + Vueify + hot-reload, linting, init-testing
+* browserify： 完整版， Browserify + Vueify + hot-reload, linting, init-testing
 * browserify-simple： 精简版， Browserify + Vueify , 适合快速原型
 * simple： 最简单的版本
 
@@ -929,7 +935,7 @@ const defaultTagRE = /\%\%((?:.|\n)+?)\%\%/g
 </div>
 ```
 
-重新构建，刷新浏览器， 现在怎么样了？ 又好了！ 哈哈， 我敢坑定你现在有一大堆想法来定制 Vue.js ，还等什么， 马上出发吧！
+重新构建，刷新浏览器， 现在怎么样了？ 又好了！ 哈哈， 我敢肯定你现在有一大堆想法来定制 Vue.js ，还等什么， 马上出发吧！
 
 ## 调试你的 Vue 方程式
 
@@ -945,7 +951,7 @@ const defaultTagRE = /\%\%((?:.|\n)+?)\%\%/g
 
 Vue 开发者工具
 
-在这里， 我们只有一个组件 -- *<Root>* 。 你可以想象， 当我们有一堆组件时， 它们将会出现在 Vue 开发工具的调试盘上。 点击 *<Root>* 组件并检查。 你可以看到所有绑定到这个组件上的数据。 如果你想改变一些， 例如， 增加一个列表项， 切换复选框， 改变标题....所有的改变都将被传播到 Vue 开发者工具上。 你可以在右手边看到变化。 我们这就来试试， 增加一条列表项。
+在这里， 我们只有一个组件 --*<Root>* 。 你可以想象， 当我们有一堆组件时， 它们将会出现在 Vue 开发工具的调试盘上。 点击 *<Root>* 组件并检查。 你可以看到所有绑定到这个组件上的数据。 如果你想改变一些， 例如， 增加一个列表项， 切换复选框， 改变标题....所有的改变都将被传播到 Vue 开发者工具上。 你可以在右手边看到变化。 我们这就来试试， 增加一条列表项。
 
 ![](imgs/2-19.png)
 
