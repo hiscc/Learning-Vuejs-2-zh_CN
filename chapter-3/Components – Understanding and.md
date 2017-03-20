@@ -52,7 +52,7 @@ Vue.component('hello-component', {template: '<h1> Hello </h1>'});
 
 我指的最佳实践是说简洁可维护的代码。 用字符串写的复杂的 **HTML** 完全不具可维护性。
 
-Vue 可以通过 *<template>* 标签在 **HTML** 声明模板。
+Vue 可以通过 <template> 标签在 **HTML** 声明模板。
 
 在 **HTML** 中重写我们的事例。
 
@@ -178,7 +178,7 @@ Vue.component('hello-component', {
 </div>
 ```
 
-如果你在浏览器中打开页面， 你只能看到 **Hello**； *user* 数据属性未被绑定到组件中：
+如果你在浏览器中打开页面， 你只能看到 **Hello** ； *user* 数据属性未被绑定到组件中：
 
 ![](imgs/3-2.png)
 
@@ -532,7 +532,7 @@ Vue.component('change-title-component', {
 * template
 * style
 
-每个部分就如你所想的那样。 在 *<template>* 标签内放入 **HTML** 模板， 在 *<script>* 标签内放入 JavaScript 代码， 在 *<style>* 标签内放入 CSS 样式。
+每个部分就如你所想的那样。 在 <template> 标签内放入 **HTML** 模板， 在 *<script>* 标签内放入 JavaScript 代码， 在 *<style>* 标签内放入 CSS 样式。
 
 你还记得我们的 *hello-component* 组建吗？ 从这里回顾一下 https://jsfiddle.net/chudaol/mf82ts9a/2/ 。
 
@@ -615,7 +615,7 @@ Vue 的创造者和贡献者也想着咱们开发者呢， 这里有一堆他们
 为 webstorm 安装 Vue 插件
 
 ## 样式和作用域
-很明显， 模板和脚本都只属于附属的组件。 但是对于样式就不一样了。 试试在我们的 *hello* 组件中为 *<h1>* 增加一些 CSS 规则：
+很明显， 模板和脚本都只属于附属的组件。 但是对于样式就不一样了。 试试在我们的 *hello* 组件中为 <h1>  增加一些 CSS 规则：
 
 ```
 <style>
@@ -663,7 +663,7 @@ Vue 的创造者和贡献者也想着咱们开发者呢， 这里有一堆他们
 你可以在这里发现更多关于预处理器和 *vue-loader* 的教程 http://vue-loader.vuejs.org/en/。
 
 ## HTML 预处理器
-为了在单文件组件中使用预处理器， 你只需要在 *<template>* 标签内添加一个 *lang* 特性！ 别忘了安装相应的模块：
+为了在单文件组件中使用预处理器， 你只需要在 <template> 标签内添加一个 *lang* 特性！ 别忘了安装相应的模块：
 
 ```
 npm install jade --save-dev
@@ -838,7 +838,7 @@ href=" https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 
 ## AddItemComponent
 
-打开 AddItemComponent.vue 。填充 *<template>* 。 看起来是这样地：
+打开 AddItemComponent.vue 。填充 <template> 。 看起来是这样地：
 
 ```
 <template>
@@ -907,7 +907,7 @@ export default {
 </script>
 ```
 
-现在你可以在 *<template>* 中使用 *item-component* 了！ 你还记的怎么遍历元素吗？ 你当然记得！ 这就是我们现在打开 *<template>* 标签的原因：
+现在你可以在 <template> 中使用 *item-component* 了！ 你还记的怎么遍历元素吗？ 你当然记得！ 这就是我们现在打开 <template> 标签的原因：
 
 ```
 //ItemsComponent.vue
@@ -1014,7 +1014,7 @@ new Vue({
 5. 在你的浏览器打开 *localhost:8080*。
 6. 然后就像前面的例子， 找到 *components* 文件夹并创建所有必要的 *.vue* 组件。
 7. 找到 *App.vue* ， 导入注册号的组件。
-8. 在每个组件的 *<template>* 部分加上一些独特的标识从而让我们可以简单地查找。
+8. 在每个组件的 <template> 部分加上一些独特的标识从而让我们可以简单地查找。
 
 你当然会遇到一些类似的结构， 看起来可能像这些：
 
@@ -1022,7 +1022,7 @@ new Vue({
 
 用单文件组件实现番茄钟的初始状态。
 
-现在， 假设我们的组件已经就绪， 而且放置到了响应的位置。
+现在， 假设我们的组件已经就绪， 而且放置到了相应的位置。
 
 我只是尽早提醒你一下我们的方程式标记应该是这样的：
 
@@ -1063,7 +1063,7 @@ new Vue({
 你可能已经注意到我移除了一些类绑定和行为控制器。 别担心。  记住 Scarlett O'Hara 在 *Gone with the Wind?* 她经常说，
 > "I can't think about that right now. I'll think about that tomorrow."
 
-( http://goo.gl/InYm8e)。 Scarlett O'Hara 是个睿智的女人。 现在， 我们将只关注我们 *App.vue* 中的 *<template>* 标签。 剩下的事等等再做。 我们只是拷贝粘贴 **HTML** 片段来替换我们的标识内容， 用短横线隔开式的组件。 在 *App.vue* 中的模板将是这样：
+( http://goo.gl/InYm8e)。 Scarlett O'Hara 是个睿智的女人。 现在， 我们将只关注我们 *App.vue* 中的 <template> 标签。 剩下的事等等再做。 我们只是拷贝粘贴 **HTML** 片段来替换我们的标识内容， 用短横线隔开式的组件。 在 *App.vue* 中的模板将是这样：
 
 ```
 //App.vue
@@ -1086,11 +1086,11 @@ new Vue({
 
 启动单文件组件的番茄钟方程式
 
-我们现在该做什么呢？ 复制粘贴响应的标记到组件内的 *<template>* 部分。 请独立完成， 我就当留个家庭作业吧。 但是， 你想检查一下文件， 可以看看这个 [chapter3/pomodoro](https://github.com/PacktPublishing/Learning-Vuejs-2/tree/master/chapter3/pomodoro) 。 所有的数据绑定和有趣的部分将放到下一章！ 别合起书， 无论怎样， 请先暂停你的番茄钟。
+我们现在该做什么呢？ 复制粘贴响应的标记到组件内的 <template> 部分。 请独立完成， 我就当留个家庭作业吧。 但是如果你想对照一下文件的话， 可以看看这个 [chapter3/pomodoro](https://github.com/PacktPublishing/Learning-Vuejs-2/tree/master/chapter3/pomodoro) 。 所有的数据绑定和有趣的部分将放到下一章！ 别合起书， 无论怎样， 请先暂停你的番茄钟。
 
 ## 响应式 CSS 变换绑定
 
-在切换到讨论大量的不同类型的数据绑定的下一章前，我将介绍一点有趣的绑定。 我知道你这是什么意思， 我亲爱的读者。 你已经发现 transition 这个词出现了两次啦， 你或许已经猜到我们可以给数据变化绑定 CSS 变换了。
+在切换到讨论大量的不同类型的数据绑定的下一章前，我将介绍一点有趣的绑定。 我亲爱的读者， 我知道你在想这到底是什么意思。 你已经发现 transition 这个词出现了两次啦， 你或许已经猜到我们可以给数据变化绑定 CSS 变换了。
 
 想象你有一个元素只有在 *show* 特性为真值的时候才显现。 这很简单， 对吗？ 用你已经知道的 *v-if* 指令：
 
@@ -1098,7 +1098,7 @@ new Vue({
 <div v-if="show">hello</div>
 ```
 
-因此， 当 *show* 特性改变时， *<div>* 会相应地改变。 想象一下在 hideing/showing 上应用 CSS 变换。 在 Vue 中你可以使用特殊的 *transition* 包装在数据变化时提供特殊的变换效果。
+因此， 当 *show* 特性改变时， <div> 会相应地改变。 想象一下在 hideing/showing 上应用 CSS 变换。 在 Vue 中你可以使用特殊的 *transition* 包装在数据变化时提供特殊的变换效果。
 
 ```
 <transition name="fade">
@@ -1148,7 +1148,7 @@ data.kittens = true
 ```
 
 ### Tip
-我希望你没有忘记在 *index.html*  文件内引入 Boootstrap CSS 样式，。 没有它， 你将看不到任何出现消失的变化。
+我希望你没有忘记在 *index.html*  文件内引入 Boootstrap CSS 样式。 没有它， 你将看不到任何出现消失的变化。
 
 现在我们将要讨论一些 CSS 变换 而非简单的 hiding/showing 。我们为我们的 *kittens* 组件应用 CSS 的 fade 变换。 为组件变化增添一些 *fade*  特性的包装：
 
