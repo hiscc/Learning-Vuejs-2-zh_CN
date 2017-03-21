@@ -1,6 +1,6 @@
 # Components – Understanding and Using
 
-在前面一章， 你已经知道了 Vue.js 是如何运作的。 你探究了幕后并改动了一点 Vue.js 源码。 你学习了一些 Vue 的关键概念， 也尝试了几种安装 Vue 的方法。 我们已经启动了项目； 我们将继续开发完善。 我们也知道了如何调试测试我们的方程式。
+在前面一章， 你已经知道了 Vue.js 是如何运作的。 你探究了 Vue 的幕后并改动了一点 Vue.js 源码。 你学习了一些 Vue 的关键概念， 也尝试了几种安装 Vue 的方法。 我们已经启动了项目； 我们将继续开发完善。 我们也知道了如何调试测试我们的方程式。
 
 在第一章， 我们讨论了组件甚至创建了一些。 在这章， 我们将继续使用组件并时间一些有趣的指令。 换句话说， 我们要：
 
@@ -42,17 +42,17 @@ Vue.component('hello-component', {template: '<h1> Hello </h1>'});
 ```
 
 ### 使用组件的好处
-在深入探究组件重写方程式前我们了解一些东东。 在本章， 我们将覆盖以下内容： 在组件中控制数据及 *el* 属性， 组件模板， 作用域和预处理器。
+在深入探究组件重写方程式前我们了解一些东东。 在本章， 我们将覆盖以下内容： 在组件中控制 *data* 及 *el* 属性， 组件模板， 作用域和预处理器。
 
 ### 在 HTML 中声明模板
 
-在我们签个例子中， 我们创建了一个用字符串重写的 Vue 组件。 它非常简单， 因为我们需要的都在其中。 现在， 想象一下我们的组件有一个更为复杂的 HTML 结构。 用字符串模板编写复杂组件容易出错， 冗余而且违反最佳实践。
+在我们这个例子中， 我们创建了一个用字符串重写的 Vue 组件。 它非常简单， 因为我们需要的都在其中。 现在， 想象一下我们的组件有一个更为复杂的 HTML 结构。 用字符串模板编写复杂组件容易出错， 冗余而且违反最佳实践。
 
 ### Tip
 
 我指的最佳实践是说简洁可维护的代码。 用字符串写的复杂的 **HTML** 完全不具可维护性。
 
-Vue 可以通过 <template> 标签在 **HTML** 声明模板。
+Vue 可以通过 template 标签在 **HTML** 声明模板。
 
 在 **HTML** 中重写我们的事例。
 
@@ -91,9 +91,9 @@ Vue.component('hello-component', {
 </body>
 ```
 
-在前面的事例里， 我们只在组件中使用了 *template* 特性。 现在让我们来看看数据和 *el* 特性应该在组件里如何配置。
+在前面的事例里， 我们只在组件中使用了 *template* 特性。 现在让我们来看看 *data* 和 *el* 特性应该在组件里如何配置。
 
-## 在组件里控制数据和 el 属性
+## 在组件里控制 data 和 el 属性
 正如前面提及的， 组件的语法和 Vue 实例的语法很想， 但是它必须扩展自 Vue 而非直接被调用。 有了这个前提， 貌似这样创建组件才对：
 
 ```
@@ -127,7 +127,7 @@ Vue 会在你用对象作为数据时发出警告
 ## 组件的作用域
 
 正如已经提到的， 所有的组件拥有它们自己的作用域， 而且不会被其他组件访问到。 然而， 全局的方程式作用域可以被所有注册过的组件访问到哦。
-你可以看到组件的作用域是本地的， 而方程式的作用域是全局的。 这是当然得。 但是， 在组件内使用父作用域不再直接。你不得不明确指出到底哪个组件的父级数据属性可以被访问，通过使用 *prop* 属性，然后通过 *v-bind* 语法把他们绑定到组件实例上。
+你可以看到组件的作用域是本地的， 而方程式的作用域是全局的。 这是当然的。 但是， 在组件内不能使用父作用域。你不得不明确指出到底哪个组件的父级数据属性可以被访问，通过使用 *prop* 属性，然后再用 *v-bind* 语法把他们绑定到组件实例上。
 
 我们可以先声明 HelloComponent 组件并包含数据及 msg 特性：
 
@@ -184,9 +184,9 @@ Vue.component('hello-component', {
 
 父级的数据属性未被绑定到 Vue 组件中。
 
-为了绑定父级的数据， 我们不得不做一下两件事：
+为了绑定父级的数据， 我们不得不做以下两件事：
 
-* 在 prop 特性中指明这个属性
+* 在 props 特性中指明这个属性
 * 把它绑定到 hello-component 调用
 
 ```
@@ -222,7 +222,7 @@ Vue.component('hello-component', {
 
 ## 组件嵌套组件
 
-组件的美好之处在于它们可以在其它组件里面重用就像乐高中的砖块一样！ 我们来创建另一个组件； 一个叫 **greetings** 被两个二级组件(form asking 和 hello component )组成的组件。
+组件的完美之处在于它们可以在其它组件里面重用这就像乐高中的砖块一样！ 我们来创建另一个组件； 一个叫 **greetings** 被两个二级组件(form asking 和 hello component )组成的组件。
 
 我们先来声明模板：
 
@@ -309,7 +309,7 @@ new Vue({
 
 一个由不同组件构成的页面
 
-尝试在 input 内改变 name 值。期望它会改变因为我们已经绑定了它， 但是奇怪的是， 改变并未发生。 啊哦， 就是这样。 默认情况下， 所有的属性遵守单向数据绑定。 这意味着在父级作用域内的变化将通知到所有子极组件反之失效。 这可以防止子极组件意外破坏父级状态。 就是这样， 但是， 也可以通过调用 *events* 强迫子极组件与他们的父级通信。 具体查看 Vue 文档 https://vuejs.org/guide/components.html#Custom-Events。
+尝试在 input 内改变 name 值。你会期望它改变因为我们已经绑定了它， 但是奇怪的是， 改变并未发生。 啊哦， 就是这样。 默认情况下， 所有的属性遵守单向数据绑定。 这意味着在父级作用域内的变化将通知到所有子极组件反之却会失效。 这可以防止子极组件意外破坏父级状态。 就是这样， 但是， 也可以通过调用 *events* 强迫子极组件与他们的父级通信。 具体查看 Vue 文档 https://vuejs.org/guide/components.html#Custom-Events。
 
 在我们的例子中， 我们可以在每次输入变化时向 form input 组件绑定 user 模型， 然后分发 input 事件。 我们通过使用 *v-on:input* 修饰符来完成它， 就如在这里被描述的一样  https://vuejs.org/guide/components.html#Form-Input-Components-using-Custom-Events 。
 
@@ -347,11 +347,11 @@ Vue.component('form-component', {
 <form-component :user.sync="user"></form-component>
 ```
 
-刷新页面。 你现在就可以改变输入框内的值了， 它会迅速地传递给父级作用域， 从而也也可通知给其它子组件。
+刷新页面。 你现在就可以改变输入框内的值了， 它会迅速地传递给父级作用域， 从而也可通知给其它子组件。
 
 ![](imgs/3-5.png)
 
-通过 .sync 修饰符可以在父级和子组件键形成双向绑定。
+通过 .sync 修饰符可以在父级和子组件间形成双向绑定。
 
 你可以在这里发现这个事例 https://jsfiddle.net/chudaol/1mzzo8yn/。
 
@@ -374,7 +374,7 @@ Vue.component('form-component', {
 ### Tip
 对于需要重写的方程式， 我们需要基于这个版本  https://jsfiddle.net/chudaol/vxfkxjzk/3/。
 
-当我们开始讨论组件的时候， 我们已经这样做过了。 不过那时，我们使用了模板字符串来设置组件。 现在我们用刚刚学习的组件配置来重写。 我们再来看看组件的界面和标识。
+当我们开始讨论组件的时候， 我们就已经这样做过了。 不过在那时我们使用了模板字符串来设置组件。 现在我们用刚刚学习的组件配置来重写。 我们再来看看组件的界面和标识。
 
 ![](imgs/3-6.png)
 
@@ -464,9 +464,9 @@ change-title-component
 
 如你所见， 模板的主要部分都是复制粘贴了相应的 **HTML** 代码。
 
-但是呢， 这里有很多重要的不同点。 在 list item 模板中， 作了轻微的改动。 你已经在前面学习了 *v-for* 指令。 在前面的例子中， 我们把它用在 *<li>* 这样的元素上。 现在你将看到我们同样把它应用在 Vue 自定义组件上。
+但是呢， 这里有很多重要的不同点。 在 list item 模板中， 作了轻微的改动。 你已经在前面学习了 *v-for* 指令。 在前面的例子中， 我们把它用在 <li> 这样的元素上。 现在你将看到我们同样把它应用在 Vue 自定义组件上。
 
-你同样可能观察到了在标题模板上的小变化。 现在它有了一个绑定到它身上的值， 也使用了 *v-on:input* 修饰符进行分发 *onInput* 方法。 正如你在前面所学习的， 自组件不能在没有事件系统的情况下直接影响父级数据。
+你同样可能观察到了在标题模板上的小变化。 现在它有了一个绑定到它身上的值， 也使用了 *v-on:input* 修饰符进行分发 *onInput* 方法。 正如你在前面所学习的， 子组件不能在没有事件系统的情况下直接影响父级数据。
 
 ## 定义注册所有组件
 
@@ -520,7 +520,7 @@ Vue.component('change-title-component', {
 
 ## 单文件组件
 
-我们知道以前的最佳实践是分离 **HTML 、 CSS、 JavaScript**。 一些例如 React 的现代化的框架慢慢越过了这个规则。 当今， 在一个单文件里写结构， 样式， 逻辑代码已经很普遍了。 事实上， 对于一些小型组件， 我们完全可以转换成这种架构。 Vue 同样允许你在同一个文件里定义一切东东。 这种类型的组件被认为是单文件组件。
+我们知道以前的最佳实践是分离 **HTML 、 CSS、 JavaScript**。 一些例如 React 的现代化的框架慢慢越过了这个规则。 当今在一个单文件里写结构， 样式， 逻辑代码已经很普遍了。 事实上， 对于一些小型组件， 我们完全可以转换成这种架构。 Vue 同样允许你在同一个文件里定义一切东东。 这种类型的组件被认为是单文件组件。
 
 ### 注意
 
@@ -532,9 +532,9 @@ Vue.component('change-title-component', {
 * template
 * style
 
-每个部分就如你所想的那样。 在 <template> 标签内放入 **HTML** 模板， 在 *<script>* 标签内放入 JavaScript 代码， 在 *<style>* 标签内放入 CSS 样式。
+每个部分就如你所想的那样。 在 template 标签内放入 **HTML** 模板， 在 script 标签内放入 JavaScript 代码， 在 style 标签内放入 CSS 样式。
 
-你还记得我们的 *hello-component* 组建吗？ 从这里回顾一下 https://jsfiddle.net/chudaol/mf82ts9a/2/ 。
+你还记得我们的 *hello-component* 组件吗？ 从这里回顾一下 https://jsfiddle.net/chudaol/mf82ts9a/2/ 。
 
 通过使用 *vue-cli 的 webpack-simple* 命令来生成脚手架。
 
@@ -561,7 +561,7 @@ export default {
 ```
 
 注意我们不需要为我们的组件增加特殊的模板标记。
-作为一个问单间组件， 已经隐式地说明模板已经在这个文件中被用于单个定义了。 你可能注意到这里有些 ES6 的语法。 当然， 也别忘了数据特性应该是个函数而非对象。
+作为一个单文件组件， 它已经隐式地说明了模板已经只作用这个文件了。 你可能注意到这里有些 ES6 的语法。 当然， 也别忘了数据特性应该是个函数而非对象。
 
 在我们的中枢脚本中， 我们需要创建 Vue app 来通知脚本使用 *HelloComponent* 组件：
 
@@ -596,7 +596,7 @@ npm run dev
 
 你可以在[chapter3/hello/](https://github.com/PacktPublishing/Learning-Vuejs-2/tree/master/chapter3/hello) 查看代码。
 
-你也可以在 webpackbin 中修改， 测试， 查看 *hello* 组件 http://www.webpackbin.com/N1LbBIsLb。
+你也可以在 webpackbin 中修改， 测试。 查看 *hello* 组件 http://www.webpackbin.com/N1LbBIsLb。
 
 ### Tip
 Webpackbin 是一项可以运行测试以 Webpack 构建的方程式的很棒的服务。 尽管还是测试版依然是一款好工具。 当然也有一些小问题， 例如， 当你下载整个项目时， 它将不会运行。
@@ -605,17 +605,17 @@ Webpackbin 是一项可以运行测试以 Webpack 构建的方程式的很棒的
 Vue 的创造者和贡献者也想着咱们开发者呢， 这里有一堆他们为我们开发的 IDE 插件。 你可以这里找到 https://github.com/vuejs/awesome-vue#syntaxhighlighting 。
 如果喜欢使用 WebStorm IDE, 根据下面的说明来安装 Vue 插件。
 
-1. 找到 Preferences | Plugins.
-2. 点击 Browse repositories.
-3. 输入 vue 于搜索框内.
-4. 选择 Vue.js 点击安装：
+1. 找到 Preferences | Plugins
+2. 点击 Browse repositories
+3. 于搜索框内输入 vue
+4. 选择 Vue.js 点击安装
 
 ![](imgs/3-7.png)
 
 为 webstorm 安装 Vue 插件
 
 ## 样式和作用域
-很明显， 模板和脚本都只属于附属的组件。 但是对于样式就不一样了。 试试在我们的 *hello* 组件中为 <h1>  增加一些 CSS 规则：
+很明显， 模板和脚本都只属于其附属的组件。 但是对于样式就不一样了。 试试在我们的 *hello* 组件中为 h1 增加一些 CSS 规则：
 
 ```
 <style>
@@ -625,7 +625,7 @@ Vue 的创造者和贡献者也想着咱们开发者呢， 这里有一堆他们
 </style>
 ```
 
-现在， 刷新页面， **Hello!** 标题的颜色如期变成的红色。 然后在 *index.html* 文件中增加一个 *<h1>* 标签。 你可能会对这个标签同样编程了红色感到吃惊：
+现在， 刷新页面， **Hello!** 标题的颜色如期变成的红色。 然后在 *index.html* 文件中增加一个 h1 标签。 你可能会对这个标签同样变成了红色而感到吃惊：
 
 ```
 <div id="app">
@@ -636,7 +636,7 @@ Vue 的创造者和贡献者也想着咱们开发者呢， 这里有一堆他们
 
 ![](imgs/3-8.png)
 
-所有的 <h1> 标签都有了我们在组件内定义的样式
+所有的 h1 标签都有了我们在组件内定义的样式
 
 为了使样式只对作用域内的组件起效， 我们需要在 *<style>* 标签内指明 *scoped* 特性：
 
@@ -648,7 +648,7 @@ Vue 的创造者和贡献者也想着咱们开发者呢， 这里有一堆他们
 </style>
 ```
 
-查看页面你将会发现只有 **Hello!** 文本时红色的， 另外的 *h1* 没有变化。
+查看页面你将会发现只有 **Hello!** 文本是红色的， 另外的 *h1* 没有变化。
 
 ## 热重载
 
@@ -663,7 +663,7 @@ Vue 的创造者和贡献者也想着咱们开发者呢， 这里有一堆他们
 你可以在这里发现更多关于预处理器和 *vue-loader* 的教程 http://vue-loader.vuejs.org/en/。
 
 ## HTML 预处理器
-为了在单文件组件中使用预处理器， 你只需要在 <template> 标签内添加一个 *lang* 特性！ 别忘了安装相应的模块：
+为了在单文件组件中使用预处理器， 你只需要在 template 标签内添加一个 *lang* 特性！ 别忘了安装相应的模块：
 
 ```
 npm install jade --save-dev
@@ -711,7 +711,7 @@ npm install sass-loader node-sass --save-dev
 
 # 用单文件组件重写我们的购物清单方程式
 
-既然我们已经了解了这么多书写组件的方法， 我们这就回到购物清单方程式， 用单文件组件重写它。 我们可以使用 Webpack配置的 *vue-cli*。 事实上， 我们已经在第二张这样做了。 所以， 开始吧：
+既然我们已经了解了这么多书写组件的方法， 我们这就回到购物清单方程式， 用单文件组件重写它。 我们可以使用 Webpack配置的 *vue-cli*。 事实上， 我们已经在第二章这样做过了。 所以， 开始吧：
 
 ```
 # 没安装的先安装 vue-cli
@@ -723,7 +723,7 @@ $ npm install
 $ npm run dev
 ```
 
-确保的的  *index.html* 文件是这样的：
+确保你的  *index.html* 文件是这样的：
 
 ```
 <!DOCTYPE html>
@@ -759,7 +759,7 @@ new Vue({
 * ItemsComponent： 渲染并操作列表
 * ChangeTitleComponent： 改变标题
 
-我们在 *components* 文件夹内创建它们。 我们先用三个空白的部分填充它们(*<template>, <script>, and <style>*), 并在 App.vue 中正确调用。 可以在每个组件内写点东西， 这样我们好区分它们：
+我们在 *components* 文件夹内创建它们。 我们先用三个空白的部分填充它们 (<template>, <script>, and <style>) , 并在 App.vue 中正确调用。 可以在每个组件内写点东西， 这样我们好区分它们：
 
 ![](imgs/3-9.png)
 
@@ -832,13 +832,12 @@ import ChangeTitleComponent from './components/ChangeTitleComponent'export defau
 我们将使用 Bootstrap 的 CSS 样式。 在全局 *index.html* 内引入文件：
 
 ```
-<link rel="stylesheet"
-href=" https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href=" https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 ```
 
 ## AddItemComponent
 
-打开 AddItemComponent.vue 。填充 <template> 。 看起来是这样地：
+打开 AddItemComponent.vue 。填充 template 。 看起来是这样地：
 
 ```
 <template>
@@ -873,7 +872,7 @@ href=" https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 </template>
 ```
 
-同时增加 *scoped* 样式。 这个组件需要特指的 *<li>, <span> 和 .remove* 类。 我们复制粘贴：
+同时增加 *scoped* 样式。 这个组件需要特指的 li, span 和 .remove 类。 我们复制粘贴：
 
 ```
 //ItemComponent.vue
@@ -907,7 +906,7 @@ export default {
 </script>
 ```
 
-现在你可以在 <template> 中使用 *item-component* 了！ 你还记的怎么遍历元素吗？ 你当然记得！ 这就是我们现在打开 <template> 标签的原因：
+现在你可以在 template 中使用 *item-component* 了！ 你还记的怎么遍历元素吗？ 你当然记得！ 这就是我们现在打开 template 标签的原因：
 
 ```
 //ItemsComponent.vue
@@ -945,7 +944,7 @@ export default {
 </script>
 ```
 
-回到 *ItemComponent* 增加 *props* 属性：
+回到 *ItemComponent* 组件增加 *props* 属性：
 
 ```
 //ItemComponent.vue
@@ -966,11 +965,11 @@ export default {
 
 # 用单文件组件重写番茄钟方程式
 
-我希望你已经可以使用的我们在第一张里开发的番茄钟方程式了。
+我希望你已经可以使用的我们在第一章里开发的番茄钟方程式了。
 
-我现在要回顾它并做在前一节里相同的练习 -- 用组件定义并重写。
+我现在要回顾它并做和前一节里相同的练习 -- 用组件定义并重写。
 
-我们来查看一下我们的番茄钟方程式。 我将惯惯你： 我们加入了一张截图， 当重计时才会更换的截图。
+我们来查看一下我们的番茄钟方程式。 我们加入了一张截图， 当重计时时才会更换的截图。
 
 ![](imgs/3-11.png)
 
@@ -1013,8 +1012,8 @@ new Vue({
 ```
 5. 在你的浏览器打开 *localhost:8080*。
 6. 然后就像前面的例子， 找到 *components* 文件夹并创建所有必要的 *.vue* 组件。
-7. 找到 *App.vue* ， 导入注册号的组件。
-8. 在每个组件的 <template> 部分加上一些独特的标识从而让我们可以简单地查找。
+7. 找到 *App.vue* ， 导入注册好的组件。
+8. 在每个组件的 template 部分加上一些独特的标识从而让我们可以方便地查找。
 
 你当然会遇到一些类似的结构， 看起来可能像这些：
 
@@ -1063,7 +1062,7 @@ new Vue({
 你可能已经注意到我移除了一些类绑定和行为控制器。 别担心。  记住 Scarlett O'Hara 在 *Gone with the Wind?* 她经常说，
 > "I can't think about that right now. I'll think about that tomorrow."
 
-( http://goo.gl/InYm8e)。 Scarlett O'Hara 是个睿智的女人。 现在， 我们将只关注我们 *App.vue* 中的 <template> 标签。 剩下的事等等再做。 我们只是拷贝粘贴 **HTML** 片段来替换我们的标识内容， 用短横线隔开式的组件。 在 *App.vue* 中的模板将是这样：
+( http://goo.gl/InYm8e)。 Scarlett O'Hara 是个睿智的女人。 现在， 我们将只关注我们 *App.vue* 中的 template 标签。 剩下的事等等再做。 我们只是拷贝粘贴 **HTML** 片段来替换我们的标识内容， 用短横线隔开式的组件。 在 *App.vue* 中的模板将是这样：
 
 ```
 //App.vue
@@ -1086,7 +1085,7 @@ new Vue({
 
 启动单文件组件的番茄钟方程式
 
-我们现在该做什么呢？ 复制粘贴响应的标记到组件内的 <template> 部分。 请独立完成， 我就当留个家庭作业吧。 但是如果你想对照一下文件的话， 可以看看这个 [chapter3/pomodoro](https://github.com/PacktPublishing/Learning-Vuejs-2/tree/master/chapter3/pomodoro) 。 所有的数据绑定和有趣的部分将放到下一章！ 别合起书， 无论怎样， 请先暂停你的番茄钟。
+我们现在该做什么呢？ 复制粘贴相应的标记到组件内的 *template* 部分。 请独立完成， 我就当留个家庭作业吧。 但是如果你想对照一下文件的话， 可以看看这个 [chapter3/pomodoro](https://github.com/PacktPublishing/Learning-Vuejs-2/tree/master/chapter3/pomodoro) 。 所有的数据绑定和有趣的部分将放到下一章！ 别合起书， 无论怎样， 请先暂停你的番茄钟。
 
 ## 响应式 CSS 变换绑定
 
@@ -1108,7 +1107,7 @@ new Vue({
 
 然后， 只需要在 *fade-enter, fade-leave, fade-enter-active, fade-leave-active* 类上定义 CSS 规则。 可以查看官方的 Vue 文档 https://vuejs.org/v2/guide/transitions.html#Transition-Classes 。
 
-我们来看看我们的 *kittens* 组件上市怎么应用这些类的。 让我们为此加上 *v-if* 指令：
+我们来看看我们的 *kittens* 组件上是怎么应用这些类的。 让我们为它加上 *v-if* 指令：
 
 ```
 <template>
@@ -1118,7 +1117,7 @@ new Vue({
 </template>
 ```
 
-当然， 我们应该在 *App.vue* 的 *<script>* 标签内加上数据函数(把它设置为全局变量从而易于在开发者工具中调试)：
+当然， 我们应该在 *App.vue* 的 *<script>* 标签内加上 data 函数(把它设置为全局变量从而易于在开发者工具中调试)：
 
 ```
 <script>
@@ -1150,7 +1149,7 @@ data.kittens = true
 ### Tip
 我希望你没有忘记在 *index.html*  文件内引入 Boootstrap CSS 样式。 没有它， 你将看不到任何出现消失的变化。
 
-现在我们将要讨论一些 CSS 变换 而非简单的 hiding/showing 。我们为我们的 *kittens* 组件应用 CSS 的 fade 变换。 为组件变化增添一些 *fade*  特性的包装：
+现在我们将要讨论一些 CSS 变换而非简单的 hiding/showing 。我们为我们的 *kittens* 组件应用 CSS 的 fade 变换。 为组件变化增添一些 *fade*  特性的包装：
 
 ```
 <template>
@@ -1181,7 +1180,7 @@ data.kittens = true
 
 在本章节， 你已经学习了 Vue 组件如何去运用它们。 你看到了如何以一种经典的方式创建注册组件， 也知道了如何使用单文件组件：
 
-* 以驼峰式创建变量， 为了在模板内使用组件， 你必须应用响应的横断符隔开式形式， 例如， MyBeautifulComponent -> my-beautiful-component
+* 以驼峰式创建变量， 为了在模板内使用组件， 你必须应用相应的横断符隔开式形式， 例如， MyBeautifulComponent -> my-beautiful-component
 * 在组件内的 *data* 和 *el* 特性必须是函数而非对象： {data : function () {}}
 * 如果你想为组件增加样式而又不泄漏到全局作用域中， 为它添加 *scoped* 特性： <style scoped></style>
 
