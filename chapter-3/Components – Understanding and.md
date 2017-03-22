@@ -767,7 +767,7 @@ new Vue({
 
 现在呢， 打开 *App.vue* 组件， 这是我们的中枢组件， 它可以集中我们所有的组件。
 
-删除 *<template>, <script>, <style>* 标签。 开始构建我们的方程式。
+删除 template, script, style 标签。 开始构建我们的方程式。
 
 首先， 我们需要导入在 *App.vue* 使用的组件。
 
