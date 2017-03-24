@@ -563,3 +563,443 @@ v-bind：attribute
 5. *App.vue* 应该导入 *ShoppingListComponent*, 在模板内， 遍历　*shoppinglists* 数组， 建立一个 *html/jade* 的选项卡结构。
 
 好了， 我们开始吧！
+
+## 创建 ShoppingListComponent 修改 ItemsComponent
+
+在组件文件夹内， 创建一个新的 *ShoppingListComponent.vue* 。复制拷贝 *App.vue* 文件内容到新文件内。 别忘了在 *items-component* 上声明包含 *title* 和 *items* 的 *props* 。 你的代码应该看起来看起来像这样：
+
+```
+//ShoppingListComponent.vue
+<template>
+  <div>
+    <h2>{{ title }}</h2>
+    <add-item-component></add-item-component>
+    <items-component v-bind:items="items"></items-component>
+    <div class="footer">
+      <hr/>
+      <change-title-component></change-title-component>
+    </div>
+  </div>
+</template>
+
+<script>
+import AddItemComponent from './AddItemComponent'
+import ItemsComponent from './ItemsComponent'
+import ChangeTitleComponent from './ChangeTitleComponent'
+
+export default {
+  components: {
+    AddItemComponent,
+    ItemsComponent,
+    ChangeTitleComponent
+  }
+  props: ['title', 'items']
+}
+</script>
+<style scoped>
+  .footer {
+    font-size: 0.7em;
+    margin-top: 20vh;
+  }
+</style>
+```
+
+注意我们移除了 container 的类。 这部分应该在 *App.vue* 内， 因为它定义了方程式全局的 container 样式。 别忘了 *props* 特性， 绑定 *props* 特性到 *items-component*!
+
+打开 *ItemsComponent.vue* 并确保有包含 *items* 的　*props* 特性：
+
+```
+<script>
+  <...>
+  export default {
+    props: ['items'],
+    <...>
+  }
+</script>
+```
+
+## 修改 App.vue
+
+现在我们打开 *App.vue* 。移除在 script 标签和 template 标签内所有代码。 在 script 标签内导入 ShoppingListComponent ,并在 *component* 里调用它：
+
+```
+//App.vue
+<script>
+  import ShoppingListComponent from './components/ShoppingListComponent'
+  export default {
+    components: {
+      ShoppingListComponent
+    }
+  }
+</script>
+```
+
+增加 *data* 特性并创建 *shoppinglists* 数组。 为数组添加任意的数据。 每一个数组对象都有 *id, title, items* 特性。在 *items* 特性内应该包含 *checked* 和 *text* 属性。 例如， 你的数据属性可能看起来是这样的：
+
+```
+//App.vue
+<script>
+import ShoppingListComponent from './components/ShoppingListComponent'
+export default {
+  components: {
+  ShoppingListComponent
+  },
+  data () {
+    return {
+      shoppinglists: [
+      {
+      id: 'groceries',
+      title: 'Groceries',
+      items: [{ text: 'Bananas', checked: true },
+              { text: 'Apples', checked: false }]
+      },
+      {
+      id: 'clothes',
+      title: 'Clothes',
+      items: [{ text: 'black dress', checked: false },
+              { text: 'all stars', checked: false }]
+      }
+      ]
+    }
+  }
+}
+</script>
+```
+
+随便再添加点内容： 添加更多的 lists , items。
+
+我们现在来创建通过遍历清单数组而编译到 bootstrap 选项卡面板的结构！ 我们先来定义一个基本的结构。 我们添加必要的类和模板结构假装我们现在只有一个元素。 我们大写标识所有我们需要在 shopping list 数组内重用的项：
+
+```
+//App.vue
+<template>
+  <div id="app" class="container">
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation">
+      <a href="ID" aria-controls="ID" role="tab" data-toggle="tab">TITLE</a>
+    </li>
+  </ul>
+    <div class="tab-content">
+      <div class="tab-pane" role="tabpanel" id="ID">
+      SHOPPING LIST COMPONENT
+      </div>
+    </div>
+  </div>
+</template>
+```
+
+在这里我们需要遍历 shopping lists 数组内的两个元素-- 包含着 a 特性的 li 标签和 *tab-pane* 块。 对于第一个元素， 我们必须为每一个购物清单中的 *href* 和 *aria-controls* 特性绑定一个 ID 并插入标题。 在第二个元素内， 我们需要为 *id* 特性绑定 ID ,并在上面绑定 *items* 和 *title* 渲染购物清单列表项！ 我们开始吧。 开始添加 *v-for* 指令给每个元素。
+
+```
+//App.vue
+<template>
+  <div id="app" class="container">
+    <ul class="nav nav-tabs" role="tablist">
+      <li v-for="list in shoppinglists" role="presentation">
+        <a href="ID" aria-controls="ID" role="tab" datatoggle="tab">TITLE</a>
+      </li>
+    </ul>
+    <div class="tab-content">
+      <div v-for="list in shoppinglists" class="tab-pane"
+      role="tabpanel"
+      id="ID">
+      SHOPPING LIST COMPONENT
+      </div>
+    </div>
+  </div>
+</template>
+```
+现在用合适的绑定来替换大写标识的部分。 记住对于绑定特性， 我们使用 *v-bind: <相应特性>* = "表达式" 的语法。
+
+对于每个锚元素的 *href* 特性， 我们必须为它定义附加到 ID 选择器的表达式： *v-bind:href = "'#' + list.id"*。 *aria-controls* 特性应该被绑定到 ID 值上。 *title* 可硬使用简单的 *{{}}* 插值标记。
+
+对于 *shopping-list-component* 组件， 我们必须绑定 *title* 和 *items* 给对应的 list item。 你还记得我们在 *ShoppingListComponent* 的 *props* 内定义的 *title* 和 *items* 属性吗？ 绑定应该像是这样 *v-bind:title = list.title* 和 *v-bind:items= ist.items*。
+
+有了合适的绑定特性， 模板看起来应该像这样：
+
+```
+//App.vue
+<template>
+  <div id="app" class="container">
+    <ul class="nav nav-tabs" role="tablist">
+    <li v-for="list in shoppinglists" role="presentation">
+      <a v-bind:href="'#' + list.id" v-bind:aria-controls="list.id"
+      role="tab" data-toggle="tab">{{ list.title }}</a>
+    </li>
+    </ul>
+    <div class="tab-content">
+      <div v-for="list in shoppinglists" class="tab-pane" role="tabpanel" v-bind:id="list.id">
+        <shopping-list-component v-bind:
+        v-bind:items="list.items"></shopping-list-component>
+      </div>
+    </div>
+  </div>
+</template>
+```
+
+我们基本完工了！ 如果你现在打开页面， 你可以发现两个选项卡出现在页面中：
+
+![](imgs/4-10.png)
+
+修改后出现选项卡标题
+
+如果你点击选项卡标题， 响应的面板将会打开。 但这不是我们希望看到的。 我们希望看到第一个面板是被默认打开的。 为了实现这个效果， 我们应该为第一个选项卡增加一个 *active* 类。 但是我们应该怎样在所有由遍历数组产生的面板上操作呢？
+
+幸运的是， Vue 不仅仅在 *v-for* 提供了对每一个遍历项的操作， 还提供多每项索引的遍历。 在模板内的表达式上重用索引变量。 因此， 我们恰当地用 “0” 这个索引来添加 *active* 类。 在 *v-for* 循环内使用索引变量很简单：
+
+```
+v-for= "(list, index) in shoppinglists"
+```
+
+类绑定的语法也和其它绑定一样：
+
+```
+v-bind:class = "active"
+```
+
+你还记得我们可以在表达式内随便写 JavaScript 语法吗？ 在这个例子内， 我们想写一个条件来解析当前值得索引， 如果索引为 “0” , 值的类是 *active*。
+
+```
+v-bind:class = "index === 0? 'active' : ''"
+```
+
+为 *v-for* 修饰符添加 *index* 变量， 为 li 和 tabpanel 元素绑定 *class* 类， 所以最终的模板代码看起来是这样的：
+
+```
+<template><div id="app" class="container">
+  <ul class="nav nav-tabs" role="tablist">
+    <li v-bind:class= "index===0 ? 'active' :
+    ''" v-for="(list, index) in shoppinglists" role="presentation">
+    <a v-bind:href="'#' + list.id" v-bind:aria-controls="list.id"
+    role="tab" data-toggle="tab">{{ list.title }}</a>
+    </li>
+  </ul>
+  <div class="tab-content">
+    <div v-bind:class= "index===0 ? 'active' : ''"
+      v-for="(list,index) in shoppinglists" class="tab-pane"
+      role="tabpanel" v-bind:id="list.id">
+      <shopping-list-component v-bind:
+      v-bind:items="list.items"></shopping-list-component>
+      </div>
+    </div>
+  </div>
+</template>
+```
+
+查看页面。 你应该可以看到一个完好默认的选项卡：
+
+![](imgs/4-11.png)
+
+在修改正确类绑定后的 shopping list 方程式
+
+最终的 shopping list 方程式代码在[chapter4/shopping-list2](https://github.com/PacktPublishing/Learning-Vuejs-2/tree/master/chapter4/shopping-list2) 。
+
+### 使用 v-on 指令来监听事件
+
+用 Vue.js 非常容易去为事件添加监听器。 事件监听也需要特殊修饰符的不同指令。 *v-on* 指令后面添加冒号：
+
+```
+v-on:click = "MyMethod"
+```
+
+是的， 那我们在哪声明方法呢？ 你可以不按我说的做， 但大多数组件方法应该在 *methods* 属性内声明！ 所以我们来声明一个叫 *myMethod* 的方法， 就像下面这样：
+
+```
+<script>
+  export default {
+    methods: {
+      myMethod () {
+        //do something nice
+      }
+    }
+  }
+</script>
+```
+
+所有的 *data* 和 *props* 特性在 methods 内都是可以用 *this* 关键字获取的。
+
+我们为 *items* 数组增加一个增加新项数的方法。 我们实际上已经在前面的章节这样做过了， 在我们学习怎样用事件分发系统在父子组件间传递数据时。 我们将在这回顾这一部分。
+
+为了在 *AddItemComponent* 内增加新的项给清单列表， 我们需要以下步骤：
+
+* 确保 *AddItemComponent* 拥有一个叫 *newItem* 的 *data* 属性。
+* 在 *AddItemComponent* 内创建 *addItem* 方法， 它用来添加新项并分发添加事件。
+* 给 **Add!** 按钮用 *v-on:click* 指令运用事件监听器。 这个事件监听器应该调用默认的 addItem 方法。
+* 在 ShoppingListComponent 内创建一个 addItem 方法， 它将接收文本值并把它作为参数添加到 *items* 数组内。
+* 为在 *ShoppingListComponent* 内的 *add-item-component* 用自定义 *v-on* 指令来绑定一个 *add* 方法。
+
+我们这就开始！ 使用[ chapter4/shopping-list2](https://github.com/PacktPublishing/Learning-Vuejs-2/tree/master/chapter4/shopping-list2) 文件夹。
+
+打开 *AddItemComponent* 并为 **Add!** 按钮上添加 *v-on* 指令的 *addItem* 方法：
+
+```
+//AddItemComponent.vue
+<template>
+  <div class="input-group">
+    <input type="text" v-model="newItem"
+    placeholder="add shopping list item" class="form-control">
+    <span class="input-group-btn">
+      <button v-on:click="addItem" class="btn btn-default"
+      type="button">Add!</button>
+    </span>
+  </div>
+</template>
+<script>
+  export default {
+    data () {
+      return {
+        newItem: ''
+      }
+    },
+    methods: {
+      addItem () {
+        var text
+        text = this.newItem.trim()
+        if (text) {
+          this.$emit('add', this.newItem)
+          this.newItem = ''
+        }
+        }
+    }
+  }
+</script>
+```
+切换到 ShoppingListComponent 绑定 *v-on:add* 指令在 template 内的 add-item-component 调用：
+
+```
+//ShoppingListComponent.vue
+<template>
+  <div>
+  <h2>{{ title }}</h2>
+  <add-item-component v-on:add="addItem"></add-item-component>
+  <items-component v-bind:items="items"></items-component>
+    <div class="footer">
+      <hr/>
+      <change-title-component></change-title-component>
+    </div>
+  </div>
+</template>
+```
+
+现在在 *ShoppingListComponent* 内创建 *addItem* 方法。 它接收文本值并把它添加到 *this.items* 数组：
+
+```
+//ShoppingListComponent.vue
+<script>
+  import AddItemComponent from './AddItemComponent'import ItemsComponent from './ItemsComponent'
+  import ChangeTitleComponent from './ChangeTitleComponent'
+  export default {
+    components: {
+      AddItemComponent,
+      ItemsComponent,
+      ChangeTitleComponent
+    },
+    props: ['title', 'items'],
+    methods: {
+      addItem (text) {
+        this.items.push({
+          text: text,
+          checked: false
+        })
+      }
+    }
+  }
+</script>
+```
+
+打开页面尝试为列表添加在输入框内的值， 点击前面的按钮。 成功啦！
+
+现在， 我想让你把自己从开发者切换用户模式。 在输入框内输入新值。 当列表项被添加后有那些明显行为？ 你会点击 *Enter* 按钮吗？ 我猜你会的！ 但在我们的方程式里， 我们还未实现这个功能。 别担心， 我的朋友， 我们只需要为输入框再添加点事件监听器就行啦就像我们在 **Add!** 按钮上做的那样。
+
+听起来很简单， 是不是？ 在我们点击 *Enter* 按钮后该触发哪些事件呢？ 对的， 就是键盘点击事件。 所以呢， 我们只需要在添加一个 *v-on:key* 指令就行啦。 问题是任何一个键被按下都该触发这个事件吗。 这不是我们想要的。 当然我们可以在 *addItem* 方法内增加条件判断并检查 *event.code* 特性， 当它为 13 (代表回车键)时， 我们调用方法。 幸运的是， Vue 给方法提供了一种按键修饰符的机制， 它允许我们只在正确的按键被点击时才触发。 它可以使用点修饰符来触发：
+
+```
+v-on:keyup.enter
+```
+
+我们来为我们的输入框添加这个机制。 找到 *AddItemComponent* 为输入框添加 *v-on:keyup.enter* 指令：
+
+```
+<template>
+  <div class="input-group">
+    <input type="text" v-on:keyup.enter="addItem" v-model="newItem"
+    placeholder="add shopping list item" class="form-control">
+      <span class="input-group-btn">
+        <button v-on:click="addItem" class="btn btn-default"
+        type="button">Add!
+        </button>
+      </span>
+  </div>
+</template>
+```
+
+打开页面尝试用 *Enter* 按钮为 shopping list 添加项。 成功啦！
+
+我们对改变标题做同样的事。 唯一的区别在于增加条目， 我们过去使用自定义的 *add* 事件， 在这我们将使用原生的输入事件。 我们已经这么做过啦。 现在只是按下面步骤执行一遍：
+1. 在 *change-title-component* 中使用 *v-modl* 来绑定标题模型。
+2. 在 *ChangeTitleComponent* 中导出在 *props* 内的值。
+3. 在 *ChangeTitleComponent* 创建一个 *onInput* 方法用来分发目标对象的原生输入方法。
+4. 在 *ChangeTitleComponent* 组件的模板内和 *onInput* 修饰符上绑定输入框值。
+
+因此， 在 *ShoppingListComponent* 模板内的 *change-title-component* 调用看起来是这样的：
+
+```
+//ShoppingListComponent.vue
+<change-title-component v-model="title"></change-title-component>
+ChangeTitleComponent will look like the following:
+
+//ChangeTitleComponent.vue
+<template>
+  <div>
+    <em>Change the title of your shopping list here</em>
+    <input v-bind:value="value" v-on:input="onInput"/>
+  </div>
+</template>
+<script>
+  export default {
+    props: ['value'],
+    methods: {
+      onInput (event) {
+        this.$emit('input', event.target.value)
+      }
+    }
+  }
+</script>
+```
+
+这部分最终版的代码在[ chapter4/shopping-list3](https://github.com/PacktPublishing/Learning-Vuejs-2/tree/master/chapter4/shopping-list3) 。
+
+## 简写
+当然， 每次去写 *v-bind* 和 *v-on* 指令也不费多少事。 开发者们更倾向于缩减大量的代码， 是的。 Vue.js 允许我们这样做！ 记住 *v-bind* 的缩写形式是冒号， *v-on* 的缩写形式是 @ 符号。 这意味对于下面这些代码我们可以这样写：
+
+```
+v-bind:items="items"  :items="items"
+v-bind:class=' $index === 0 ? "active" : ""'
+:class=' $index===0 ? "active" : ""'
+v-on:keyup.enter="addItem"  @keyup.enter="addItem"
+```
+
+## 练习
+用我们刚学过的缩写方式重写在购物清单内的所有 *v-bind* 和 *v-on* 指令。
+
+可以在这里查看[ chapter4/shopping-list4](https://github.com/PacktPublishing/Learning-Vuejs-2/tree/master/chapter4/shopping-list4) 。
+
+## 小猫
+
+在本章， 我们没在番茄钟上实现切图小猫效果。 我向你保证在下一章我们将把它当成重点项目。 与此同时， 我希望下面这只小猫会让你感到开心：
+
+![](imgs/4-12.png)
+
+小猫问 “接下来是啥呢？”
+
+
+## 总结
+
+在本章， 我们扩展了所有绑定数据的方式。 你学习了如何使用双花括号来简单地插入数据
+。 你也学习了怎样使用 JavaScript 表达式来实现过滤器。 你学习运用了诸如 *v-bind, v-model, v-for, v-if, v-show* 这类指令。
+
+我们使用了更丰富有效的数据绑定语法来改善我们的方程式。
+
+在下一章， 我们将用简洁的概念谈谈 Vuex, 一个受 Flux 和 Redux 启发而成的状态管理架构。
+
+我们将创建为两个方程式提供全局的方程式状态管理的商店并深入它的工作原理。
