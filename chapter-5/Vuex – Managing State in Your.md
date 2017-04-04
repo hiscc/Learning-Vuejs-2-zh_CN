@@ -1437,3 +1437,274 @@ const state = {
 * isWorking 状态影响标题： 当它要运行时我们应该显示 **Work!** ；当它要停止时我们应该显示 **Rest!**
 * isWorking 状态也影响着小猫组件的可见性： 它应该在 *isWorking* 为 *false* 时可见。
 * 计时器属性影响着 *minute* 和 *second*： 每当时间递减， *second* 也应该递减， 每 60 次的递减后， *minute* 应该递减它的值。
+
+我们来定义 *isWorking* 状态的 getters 函数。 在定义这些 getters 后， 我们在组件内重用它们而非硬编码。 我们以为 isWorking 属性定义一个 getter 开始：
+
+```
+//getters.js
+export default {
+  isStarted: state => state.started,
+  isPaused: state => state.paused,
+  isStopped: state => state.stopped,
+  isWorking: state => state.isWorking
+}
+```
+我们在硬编码的 *isworking* 组件内重用这个 getter。 打开 *App.vue*， 移除所有的 *isworking* 硬编码变量， 导入 *mapGetters* 对象， 映射 *isworking* 属性给 *isWorking* 方法：
+
+```
+//App.vue
+<script>
+  <...>
+  import { mapGetters } from 'vuex'
+
+  export default {
+    <...>
+    computed: mapGetters({
+      isworking: 'isWorking'
+    }),
+    store
+  }
+</script>
+```
+
+在 *StateTitleComponent* 内重复相同的步骤。 导入 *mapGetters* , 用映射好的 *computed* 属性替换 *props*:
+
+```
+//StateTitleComponent.vue
+<script>
+  import { mapGetters } from 'vuex'
+
+  export default {
+    data () {
+      return {
+        workingtitle: 'Work!',restingtitle: 'Rest!'
+      }
+    },
+    computed: mapGetters({
+      isworking: 'isWorking'
+    })
+  }
+</script>
+```
+
+其它组件保持不变！ 在模板内， *isworking* 属性已被使用。 这个属性依旧存在； 它只是从响应式的 Vuex 仓库导入， 而非硬编码！
+
+现在， 我们必须为 *minutes* 和 *seconds* 定义 getters。 这个部分很棘手因为在这些 getters 内， 我们必须为计时器状态属性应用一些计算。 这不是很难。 我们的计时器呈现了一个完整的 *seconds* 数。 这意味着我们可以通过以 60 分钟计时而简单地提取 *minutes*。 *seconds* 也可通过分割部分为 60 份的余数来提取。 因此， 我们这样写我们的 getters：
+
+```
+//getters.js
+export default {
+  <...>
+  getMinutes: state => Math.floor(state.counter / 60),
+  getSeconds: state => state.counter % 60
+}
+```
+
+就是这样， 我们现在就在 *CountdownComponent* 内重用这些 getters 并把它们映射相应的方法给 *min* 和 *sec* 属性。 别忘了硬编码的数据。
+
+```
+//CountdownComponent.vue
+<script>
+  import { mapGetters } from 'vuex'
+  export default {
+    computed: mapGetters({
+      min: 'getMinutes',
+      sec: 'getSeconds'
+    })
+  }
+</script>
+```
+
+剩余的不变！ 模板会一直引用 *min* 和 *sec* 属性。 代码在[chapter5/pomodoro3](https://github.com/PacktPublishing/Learning-Vue.js-2/tree/master/chapter5/pomodoro3) 文件夹内。 查看页面， 一切正常运行：
+
+![](imgs/5-7.png)
+
+改变运行时间的配置文件， 将会迅速地反映在方程式视图内
+
+
+## 创建番茄钟计时器
+
+好的， 现在所有事情都准备恰当了， 我们需要一些 *rest* ！ 我们定义两个辅助函数， *togglePomodoro* 和 *tick*。
+
+前一个函数负责切换 *isWorking* 属性。 它将重定义状态的计时器。 当状态为 *isWorking* 时， 计时器将响应相应的变化， 当状态不是 *isWorking* 时， 计时器将响应剩余的时间。
+
+*tick* 函数将递减计数器并检查是否为零， 在这个例子中， 将切换番茄钟的状态。 剩余的部分依旧需要认真对待：
+
+```
+//mutations.js
+function togglePomodoro (state, toggle) {
+  if (_.isBoolean(toggle) === false) {
+    toggle = !state.isWorking
+  }
+  state.isWorking = toggle
+  state.counter = state.isWorking ? WORKING_TIME : RESTING_TIME
+}
+```
+
+别忘了导入 WORKING_TIME 和 RESTING_TIME! 同时， 别忘了导入 *underscore* 因为我们使用 *_.isBoolean* 检查：
+
+```
+//mutations.js
+import _ from 'underscore'
+import { WORKING_TIME, RESTING_TIME } from './config'
+
+
+//mutations.js
+function tick (state) {
+  if (state.counter === 0) {
+    togglePomodoro(state)
+  }
+  state.counter--
+}
+```
+
+好的！ 我们还需要设置每秒间的间隔函数。 在哪应用呢？ 放在我们的 START mutation 内会使逻辑更加清晰！
+
+但是如果我们想在 START mutation 内设置间隔函数， 它又是怎么停止或者暂停呢？ 这就是 *setInterval* 和 *clearInterval* 函数存在的原因。 我们需要一个初始化 interval 值得仓库！ 我们以定义 interval 为 null 为开始：
+
+```
+//store.jsconst state = {
+  <...>
+  interval: null
+}
+```
+
+现在， 在我们的 START mutation 内，我们添加以下代码来初始化 interval:
+
+```
+//mutations.js
+export default {
+  [types.START] (state) {
+    state.started = true
+    state.paused = false
+    state.stopped = false
+    state.interval = setInterval(() => tick(state), 1000)
+  },
+  <...>
+}
+```
+
+我们仅仅设置 *tick* 函数在每秒时调用。 反过来， *tick* 函数将递减计数器。
+
+如果你现在点击开始按钮， 技术将会开始！ 基本要完工了。 我们仅仅需要添加 *clearInterval* 函数在 *pause* 和 *stop* mutation 方法上。 除了这， 在 *stop* 方法上， 我们调用 *togglePomodoro* 函数：
+
+```
+//mutations.js
+export default {
+  [types.START] (state) {
+    state.started = true
+    state.paused = false
+    state.stopped = false
+    state.interval = setInterval(() => tick(state), 1000)
+  },
+
+  [types.PAUSE] (state) {
+    state.paused = true
+    state.started = true
+    state.stopped = false
+    clearInterval(state.interval)
+  },
+
+  [types.STOP] (state) {
+    state.stopped = true
+    state.paused = false
+    state.started = false
+    togglePomodoro(state, true)
+  }
+}
+```
+
+## 小猫的挑战
+
+我希望你已经完成了大半， 你该歇歇了！ 这是对你的奖励：
+
+![](imgs/5-8.png)
+
+你想在改变时间时展示图片吗？ 当然！ 为了达到这个目的我们需要在图片资源后添加一些东东。
+
+### Tip
+不提供缓存的一项最佳实践是在请求 URL 后加上时间戳。
+
+我们就能这样做， 例如， 在仓库内加一个属性， timestamp， 当每个计数器递减时更新， 它的值也会添加到图片源 URL 的后面。 像这样做：
+
+```
+//store.js
+const state = {
+  <...>
+  timestamp: 0
+}
+```
+
+告诉 *tick* 函数取更新这个值：
+
+```
+//mutations.js
+function tick(state) {
+  <...>
+  state.timestamp = new Date().getTime()
+}
+```
+
+为这个值在 *getters.js* 内创建 getter， 在 *KittensComponent* 内通过 *this.$store.getters.getTimestamp* 方法使用它：
+
+```
+//getters.js
+export default {
+  <...>
+  getTimestamp: state => state.timestamp
+}
+
+//KittensComponent.vue
+<script>
+  export default {
+    computed: {
+      catimgsrc () {
+        return 'http://thecatapi.com/api/images/get?size=med&ts='
+        + this.$store.getters.getTimestamp
+      }
+    }
+  }
+</script>
+```
+
+现在， 是不是感觉有点快？ 我们来定义时间来展示每只小猫。 这一点也不难。 例如， 如果我们决定展示每只小猫的时间设为三秒钟， 在改变 *timestamp* 的状态前， 我们必须检查一下是计数器是否被分割为三份。 我们配置小猫出现的时间：
+
+```
+//config.js
+export const WORKING_TIME = 0.1 * 60
+export const RESTING_TIME = 5 * 60
+export const KITTEN_TIME = 5 //each kitten is visible for 5 seconds
+```
+
+现在在 *mutations.js* 文件内导入配置， 并使用 *tick* 函数来检查是否应该变化 *timestamp* 的值：
+
+```
+//mutations.js
+import { WORKING_TIME, RESTING_TIME, KITTEN_TIME } from './config'
+
+<...>
+function tick(state) {
+  <...>
+  if (state.counter % KITTEN_TIME === 0) {
+    state.timestamp = new Date().getTime()
+  }
+}
+```
+
+完成了！ 你可以在[chapter5/pomodoro4](https://github.com/PacktPublishing/Learning-Vue.js-2/tree/master/chapter5/pomodoro4) 查看。
+
+在回顾本章之前， 休息一下！
+
+![](imgs/5-9.png)
+
+美美地歇息下。 就像这只小猫一样。
+
+
+## 总结
+在本章， 你看到了如何使用事件控制器及触发机制来传递组件的数据变化给它们的父级。
+
+最重要的是， 你使用了强大的 Vuex 架构来建立组件间的数据流。 你知道了怎么建立仓库， 和它主要的部分， mutations, 状态。 你学习了如何用仓库来组织方程式让它变得模块化及可维护。 你也学习了如何创建仓库的 getters 及如何去定义分发仓库状态 mutations 的 actions。 我们在我们的方程式中应用了所有学过的机制。
+
+在这点上， 我们已经在 Vue 方程式内使用了数据交换机制， 从组件内简单的本地数据绑定到全局状态管理。 我们知道了在 Vue 内所有操作数据的方式。
+
+在下一章， 我们将深入 Vue 的插件系统。 你将学习如何去使用插件， 创建自己的插件。 用自定义的行为来增强你的方程式。
