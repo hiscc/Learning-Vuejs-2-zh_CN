@@ -460,3 +460,602 @@ export default {
 我们完成了！ 试着添加清单列表， 切换， 刷新页面， 什么都不变！
 
 ## 创建一个新的购物清单
+
+好的， 我们已经从服务器获取了购物清单； 我们也应用了数据变更。 但是， 如果我们在用户界面内直接创建购物清单那样的话会更棒。 当然， 我们能做到！
+
+我们来增加几个行为来调用相应的 API 方法， 如下：
+
+```
+//actions.js
+export default {
+  <...>
+  createShoppingList: ({ commit }, shoppinglist) => {
+    api.addNewShoppingList(shoppinglist)
+  }
+}
+```
+
+现在我们提供了一种可视化操作。 我们在选项卡列表中通过 ＋ 操作来创建额外的选项卡， 我们用点击事件来实现。 我们将在 *App.vue* 组件中实现它。 我们已经导入了 *mapActions* 对象。 我们在 *methods* 属性上创建一个 *createShoppingList* 方法。
+
+```
+//App.vue
+<script>
+  import ShoppingListComponent from './components/ShoppingListComponent'
+  import ShoppingListTitleComponent from
+  './components/ShoppingListTitleComponent'
+  import store from './vuex/store'
+  import { mapGetters, mapActions } from 'vuex'
+
+  export default {
+    components: {
+      ShoppingListComponent,
+      ShoppingListTitleComponent
+    },
+    computed: mapGetters({
+      shoppinglists: 'getLists'
+    }),
+    methods: mapActions(['populateShoppingLists',
+    'createShoppingList']),
+    store,
+    mounted () {
+      this.populateShoppingLists()
+    }
+  }
+</script>
+```
+
+现在我们的 *App.vue* 组件已经可以访问 *createShoppingList* action, 还能再事件控制器上得到调用。 问题是哪个是数据？ *createShoppingList* 方法一直在等待接收一个发往服务器的数据。 我们来创建一个能生成新列表的方法， 在这个方法内调用 action。 但是这个方法该放在哪里呢？ 组件里的 *methods* 属性已经被 *mapActions* 辅助函数占用了。 好的， *mapActions* 方法返回方法的映射。 我们可以用本地方法来简单地扩展这个映射：
+
+```
+//App.vue
+methods: _.extend({},
+  mapActions(['populateShoppingLists', 'createShoppingList']),
+  {
+    addShoppingList () {
+      let list = {
+        title: 'New Shopping List',
+        items: []
+      }
+    this.createShoppingList(list)
+    }
+  }),
+```
+
+现在我们仅仅需要添加一个按钮并绑定 *addShoppingList* 方法给它的点击事件。 你可以在页面的任意地方创建你自己的按钮。 我的按钮代码是这样的：
+
+```
+App.vue
+<template>
+  <div id="app" class="container">
+    <ul class="nav nav-tabs" role="tablist">
+      <li :class="index===0 ? 'active' : ''" v-for="(list, index) in
+      shoppinglists" role="presentation">
+      <shopping-list-title-component :id="list.id"
+      :title="list.title"></shopping-list-title-component>
+      </li>
+      <li>
+        <a href="#" @click="addShoppingList">
+          <i class="glyphicon glyphicon-plus-sign"></i>
+        </a>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+      <div :class="index===0 ? 'active' : ''" v-for="(list, index) in
+      shoppinglists" class="tab-pane" role="tabpanel" :id="list.id">
+        <shopping-list-component :id="list.id" :title="list.title"
+        :items="list.items"></shopping-list-component>
+      </div>
+    </div>
+  </div>
+</template>
+```
+
+查看页面； 在最后一个选项卡上你有了一个加号按钮， 它清晰地指引你来创建一个新的列表：
+
+![](imgs/6-2.png)
+
+现在我们通过加号按钮来添加新的购物列表
+
+试着点击按钮， 哇哦， 什么都没发生！ 但是如果你查看网络面板， 你可以看到刚刚产生的请求：
+
+![](imgs/6-3.png)
+
+创建请求已经被成功执行了； 但是在这里却什么都没有发生。
+
+实际上， 这已经成功了。 我们已经更新了服务器的信息， 但是客户端并没有意识到这个变化。 如果我们能在创建购物清单后填充清单就更好了。 当然啦， 我们可以。 回到 *actions.js* 并调用 *populateShoppingLists* action ：
+
+```
+//actions.js
+createShoppingList: (store, shoppinglist) => {
+  api.addNewShoppingList(shoppinglist).then(() => {
+    store.dispatch('populateShoppingLists')
+  })
+}
+```
+
+现在， 如果你点击加号按钮， 你将立即看到刚创建的清单出现在选项卡面板里， 就像下图一样：
+
+![](imgs/6-4.png)
+
+在填充列表后的新列表
+
+你可以点击新列表， 改变标题， 添加列表项， 切换。 当你刷新页面后， 所有数据都将不变。 干得好！
+
+## 删除已有的购物清单
+
+我们已经能在创建更新我们的购物清单了。 现在我们需要删除它们。 在我们学习完本章的内容后， 你会认为这其实是最简单的一部分了。 我们应该在我们的 API 上添加一个 *deleteShoppingList* 方法， 为每个购物清单添加删除按钮， 并在上面调用 行为。
+
+我们从添加这个行为开始。 很简单， 正如我们创建列表一样， 我们将在删除购物清单后调用 *populate* 方法， 我们的行为就像这样：
+
+```
+//action.js
+deleteShoppingList: (store, id) => {
+  api.deleteShoppingList(id).then(() => {
+    store.dispatch('populateShoppingLists')
+  })
+}
+```
+
+现在让我们想想在哪加个删除按钮呢。 我更喜欢在选项卡的头部加上它。 这个组件叫 *ShoppingListTitleComponent* 。 打开它并导入 *mapActions* 辅助函数就像下面这样：
+
+```
+//ShoppingListTitleComponent.vue
+<script>
+import { mapActions } from 'vuex'
+
+export default{
+  props: ['id', 'title'],
+  computed: {
+    href () {
+      return '#' + this.id
+    }
+  },
+  methods: mapActions(['deleteShoppingList'])
+}
+</script>
+```
+
+现在我们来添加删除按钮并绑定 *deleteShoppingList* 方法给它的点击事件监听器。 我们将把 ID 传入这个方法中。 我们可以直接在模板内这样做：
+
+```
+//ShoppingListTitleComponent.vue
+<template>
+  <a :href="href" :aria-controls="id" role="tab" data-toggle="tab">
+    {{ title }}
+    <i class="glyphicon glyphicon-remove"
+    @click="deleteShoppingList(id)"></i>
+  </a>
+</template>
+```
+
+我也添加了一点点标题的样式让它看起来更棒：
+
+```
+<style scoped>
+i {
+  font-size: x-small;
+  padding-left: 3px;
+  cursor: pointer;
+}
+</style>
+```
+
+就是这样！ 打开页面你在购物列表标题旁边看到一个 X 按钮。 试着点击它你将立即看到变化， 正如下图：
+
+![](imgs/6-5.png)
+
+有了删除按钮的购物清单列表
+
+恭喜你哦！ 我们现在已经有了功能完备的方程式， 我们可以创建， 删除购物清单并改变列表项！ 干得好！ 最终代码在 [ chapter6/shopping-list2](https://github.com/PacktPublishing/Learning-Vuejs-2/tree/master/chapter6/shopping-list2) 。
+
+### 练习
+
+我们的每个购物清单都挺像的。 你能加点样式来区分它们吗。
+
+## 在番茄钟方程式内创建使用插件
+
+现在我们已经知道如何使用已有的插件了， 我们为什么不自己制作一个呢？ 我们番茄钟方程式已经有了一些动画， 页面也将在番茄钟切换状态时发生变化。 但是如果我们不查看选项卡， 我们分不清它到底是不是在运行。 我们来为我们的番茄钟方程式加点声音！
+
+在考虑为一款时间管理方程式加点声音时， 我更想想想对工作有益的声音。 我们每个人都有自己最爱的工作列表播放录。 当然， 这取决于每个人的音乐爱好。 这就是我为什么决定要给我们的方程式添加一些自然的音响的原因。 研究指出不同的声音与高强度的工作很配。 可以在维基  https://en.wikipedia.org/wiki/Sound_masking 了解。 Quora 也有些讨论  http://bit.ly/2cmRVW2 。
+
+在这部分， 我们将使用 Web Audio API ( https://developer.mozilla.org/enUS/docs/Web/API/Web_Audio_API ) 来创建 Vue 的插件生成 白， 粉， 棕的声音。 我们将提供一种声音的事例。 我们也提供全局的 Vue 方法来开始暂停这些声音。 然后， 我们将使用这个插件在休息时切换到沉默状态， 工作时切换为声音状态。 听起来有趣又有挑战吧？ 我希望如此！ 我们开始吧！
+
+## 创建一个声音生成器插件
+
+我们的插件可以存储到单个 JavaScript 文件内。 它将包含三个方法， 一个用于生成每种声音并提供 *Vue.install* 方法来安装。 我们使用 [ chapter6/pomodoro ](https://github.com/PacktPublishing/Learning-Vue.js-2/tree/master/chapter6/pomodoro ) 文件夹作为起点。 在 *src* 文件夹下创建一个插件二级文件夹。 添加 *VueNoiseGeneratorPlugin.js* 文件。 现在创建下面三个方法：
+
+* generateWhiteNoise
+* generatePinkNoise
+* generateBrownNoise
+
+我不再造轮子了我将复制粘贴我在网上找到的代码。 当然我对这些代码非常感谢 http://noisehack.com/generate-noise-web-audio-api/ 。 正如所说的， 我们的插件就像下面这样组织：
+
+```
+// plugins/VueNoiseGenerator.js
+import _ from 'underscore'
+// Thanks to this great tutorial:
+//http://noisehack.com/generate-noise-web-audio-api/
+
+var audioContext, bufferSize, noise
+audioContext = new (window.AudioContext || window.webkitAudioContext)()
+
+function generateWhiteNoise () {
+  var noiseBuffer, output
+  bufferSize = 2 * audioContext.sampleRate
+  noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate)
+
+  output = noiseBuffer.getChannelData(0)
+
+  _.times(bufferSize, i => {
+    output[i] = Math.random() * 2 - 1
+  })
+  noise = audioContext.createBufferSource()
+  noise.buffer = noiseBuffer
+  noise.loop = true
+  noise.start(0)
+  return noise
+}
+
+function generatePinkNoise () {
+  bufferSize = 4096
+  noise = (function () {
+  var b0, b1, b2, b3, b4, b5, b6, node
+  b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0
+  node = audioContext.createScriptProcessor(bufferSize, 1, 1)
+  node.onaudioprocess = function (e) {
+    var outputoutput = e.outputBuffer.getChannelData(0)
+    _.times(bufferSize, i => {
+      var white = Math.random() * 2 - 1
+      b0 = 0.99886 * b0 + white * 0.0555179
+      b1 = 0.99332 * b1 + white * 0.0750759
+      b2 = 0.96900 * b2 + white * 0.1538520
+      b3 = 0.86650 * b3 + white * 0.3104856
+      b4 = 0.55000 * b4 + white * 0.5329522
+      b5 = -0.7616 * b5 - white * 0.0168980
+      output[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362
+      output[i] *= 0.11 // (roughly) compensate for gain
+      b6 = white * 0.115926
+    })
+  }
+  return node
+  })()
+  return noise
+}
+
+function generateBrownNoise () {
+  bufferSize = 4096
+  noise = (function () {
+    var lastOut, node
+    lastOut = 0.0
+    node = audioContext.createScriptProcessor(bufferSize, 1, 1)
+    node.onaudioprocess = function (e) {
+      var output = e.outputBuffer.getChannelData(0)
+      _.times(bufferSize, i => {
+        var white = Math.random() * 2 - 1
+        output[i] = (lastOut + (0.02 * white)) / 1.02
+        lastOut = output[i]
+        output[i] *= 3.5
+        // (roughly) compensate for gain
+      })
+    }
+    return node
+  })()
+  return noise
+}
+```
+
+你可以在 JSFiddle https://jsfiddle.net/chudaol/7tuewm5z/  听到所有的声音。
+
+现在， 我们实现了这三种声音了。 我们必须导出 *install* 方法。 这个方法接收 Vue 实例， 然后我们可以在上面创建指令和方法。 我们创建一个 *noise* 指令。 这个指令可以有三个值， *white, pink, brown* 。 通过相应声音的创建方法来调用。 我们的 *install* 方法如下：
+
+```
+// plugins/VueNoiseGeneratorPlugin.jsexport
+default {
+  install: function (Vue) {
+    Vue.directive('noise', (value) => {
+      var noise
+      switch (value) {
+        case 'white':
+          noise = generateWhiteNoise()
+          break
+        case 'pink':
+          noise = generatePinkNoise()
+          break
+        case 'brown':
+          noise = generateBrownNoise()
+          break
+        default:
+          noise = generateWhiteNoise()
+      }
+      noise.connect(audioContext.destination)
+      audioContext.suspend()
+    })
+  }
+}
+```
+
+安装后， 我们实例化 *audioContext* 并挂起它， 因为我们可不想一开始就产生这些声音。 我们需要在一些事件上实例化它们(例如，开始按钮, 暂停按钮之类的)。 我们提供方法来开始， 暂停， 停止我们的 *audioContext* 。 我们将把这三个方法包装成一个叫 *noise* 的全局 Vue 属性。 我们把这些方法命名为 *start, pause, stop*。 在 *start* 方法内， 我们要开始 *audioContext* ， 在 *pause* 和 *stop* 方法上挂起它。 所以， 我们的方法看起来就像下面这样：
+
+```
+// plugins/VueNoiseGeneratorPlugin.js
+
+export default {
+  install: function (Vue) {
+    Vue.directive('noise', (value) => {
+      <...>
+    })
+    Vue.noise = {
+      start () {
+        audioContext.resume()
+      },
+      pause () {
+        audioContext.suspend()
+      },
+      stop () {
+        audioContext.suspend()
+      }
+    }
+  }
+}
+```
+
+就是这样！ 我们的插件完全可用了， 它不是很完美， 当然， 因为我们只有一个 *audioContext* ， 它只被一次实例化并只有一种声音， 这意味着我们将不能多次使用 *noise* 指令。 但是呢， 这只是个原型， 你完全可以在后续完善它！
+
+## 在番茄钟内使用插件
+
+首先， 我们有一个声音生成器插件， 就差使用了！ 你已经知道如何来使用它额。 打开 *main.js* 文件， 导入 *VueNoiseGeneratorPlugin* ， 并告诉 Vue 来使用它：
+
+```
+import VueNoiseGeneratorPlugin from
+'./plugins/VueNoiseGeneratorPlugin'
+
+Vue.use(VueNoiseGeneratorPlugin)
+```
+
+然后， 我们可以添加 *noise* 指令并在番茄钟内任意地使用 *Vue.noise* 方法。 我们绑定给 *App.vue* 组件内的主模板：
+
+```
+//App.vue
+<template>
+  <div id="app" class="container" v-noise="'brown'">
+    <...>
+  </div>
+</template>
+```
+
+注意我们使用了 *v-noise* 名字的指令， 而非 *noise*。 我们已经在自定义指令时讨论过它了。 在使用指令时， 给它的名字加上 *v-* 前缀。 也请注意， 我们在单引号包围的 *brown* 字符串后又用了双引号。 如果不这样做， Vue 将搜索 *brown* 数据属性， 这就是 Vue 的工作。 我们可以在指令内写任何 JavaScript 语句绑定任务， 我们必须在双引号内传入。 你可以创建操作 *noise* 数据属性并分配给你想要分配的值， 在指令绑定语法内重用。
+
+然后， 我们在 *start* mutation 内调用 *Vue.noise.start* 方法：
+
+```
+//mutations.js
+import Vue from 'vue'
+<...>
+export default {
+  [types.START] (state) {
+    <...>
+    if (state.isWorking) {
+      Vue.noise.start()
+    }
+  },
+<...>
+```
+
+查看页面并点击 start 按钮。 你将听到 brown 声音。  小心千万别吵醒你的同事也别吓到你的家人。 试着改变声音的值。
+
+剩下就是你还没有做的。 我们创建了声音开始但无法停止的机制。 我们在 *pause* 和 *stop* mutations 上调用 *Vue.noise.pause* 和 *Vue.noise.stop* 方法：
+
+```
+//mutations.js
+export default {
+  <...>
+  [types.PAUSE] (state) {
+    <...>
+    Vue.noise.pause()
+  },
+  [types.STOP] (state) {
+    <...>
+    Vue.noise.stop()
+  }
+}
+```
+
+查看页面。 点击暂停或停止按钮， 声音被挂起了！ 我们还什么都没做呢。 记得我们的目的是在工作时有声音而不是在休息时。 所以， 我们看看再 *mutations.js* 文件内的 *togglePomodoro* 方法并添加一个通过番茄钟当前状态来开始暂停声音的机制：
+
+```
+//mutations.js
+function togglePomodoro (state, toggle) {
+  if (_.isBoolean(toggle) === false) {
+    toggle = !state.isWorking
+  }
+
+  state.isWorking = toggle
+  if (state.isWorking) {
+    Vue.noise.start()
+  } else {
+    Vue.noise.pause()
+  }
+  state.counter = state.isWorking ? WORKING_TIME : RESTING_TIME
+}
+```
+
+番茄钟的代码可以在这里查看[chapter6/pomodoro2](https://github.com/PacktPublishing/Learning-Vue.js-2/tree/master/chapter6/pomodoro2) 文件夹。
+
+## 创建一个按钮切换声音
+
+为声音绑定番茄钟的状态很棒。 当暂停方程式时声音也停止很棒。 但是， 在方程式运行时停止声音也很有用。 想到这些应用场景， 甚至是在方程式运行时拨打 Skype 电话。 在这些情况下， 在这类场景下， 有个声音背景可一点也不好。 我们添加一个按钮来切换声音。 以声明一个 *soundEnabled* 仓库属性并初始为 *true* 为起始点。 为这个属性创建 *getter* 。 所以看起来是这样的：
+
+```
+//store.js
+<...>
+const state = {
+  <...>
+  soundEnabled: true
+}
+
+ //getters.js
+
+export default {
+  <...>
+  isSoundEnabled: state => state.soundEnabled
+}
+```
+
+现在我们必须提供一种机制来切换声音。 我们来为它创建 mutation 方法并添加分发这个 muation 的 action。 以声明 TOGGLE_SOUND 为 mutation 类型开始：
+
+```
+//mutation_types.js
+<...>
+export const TOGGLE_SOUND = 'TOGGLE_SOUND'
+```
+
+现在打开 *mutations.js* 添加 mutation 方法切换 *soundEnabled* 仓库属性：
+
+```
+//mutations.js
+[types.TOGGLE_SOUND] (state) {
+  state.soundEnabled = !state.soundEnabled
+  if (state.soundEnabled) {
+    Vue.noise.start()
+  } else {
+    Vue.noise.pause()
+  }
+}
+```
+
+现在我们添加分发这个 mutation 的 action：
+
+```
+//actions.js
+export default {
+  <...>
+  toggleSound: ({ commit }) => {
+    commit(types.TOGGLE_SOUND)
+  }
+}
+```
+
+现在， 我们创建了所有需要的按钮！ 我们在 *ControlsComponent*  完成它。 给 methods 映射添加一个 *getter* 和 *action* ：
+
+```
+//ControlsComponent.vue
+<script>
+  import { mapGetters, mapActions } from 'vuex'
+
+  export default {
+  computed: mapGetters(['isStarted', 'isPaused', 'isStopped', 'isSoundEnabled']),
+  methods: mapActions(['start', 'stop', 'pause', 'toggleSound'])
+  }
+</script>
+```
+
+现在我们能给模板添加一个按钮。 我建议以一个 *glyphicon* 类的标致替代。
+
+我们只在方程式开始并未暂停时显示这个标志， 只有番茄钟的状态是 *working* 时显示， 这样我们就不会弄乱切换状态了。 这意味着我们需要 *v-show* 指令：
+
+```
+v-show="isStarted && !isPaused && isWorking"
+```
+
+注意我们在这里使用 *isWorking* 属性， 它还没被导入呢。 把它加入到方法映射里：
+
+```
+//ControlsComponents.vue
+<script>
+  import { mapGetters, mapActions } from 'vuex'
+
+  export default {
+  computed: mapGetters(['isStarted', 'isPaused', 'isStopped', 'isWorking', 'isSoundEnabled']),
+  methods: mapActions(['start', 'stop', 'pause', 'toggleSound'])
+  }
+</script>
+```
+
+在这个元素上我们也使用 *glyphicon-volume-off* 和 *glyphicon-volume-on*  类。 它们将指明声音切换动作状态。 *glyphicon-volume-off* 类将在有声音时，  *glyphicon-volume-on* 类将在么声音时。 代码里这样写：
+
+```
+:class="{ 'glyphicon-volume-off': isSoundEnabled, 'glyphicon-volume-up': !isSoundEnabled }"
+```
+
+还有一点重要的是， 我们应该在按钮被点击时调用 *toggleSound* 。 就是说我们应该给这个元素绑定点击事件：
+
+```
+@click='toggleSound'
+```
+
+所以呢， 整个代码看起来像这样：
+
+```
+//ControlsComponent.vue
+<template>
+  <span>
+    <...>
+    <i class="toggle-volume glyphicon" v-show="isStarted &&
+    !isPaused && isWorking" :class="{ 'glyphicon-volume-off':
+    isSoundEnabled, 'glyphicon-volume-up': !isSoundEnabled }"
+    @click="toggleSound"></i>
+  </span>
+</template>
+```
+
+我们为这个按钮再加一点样式：
+
+```
+<style scoped>
+  <...>
+  .toggle-volume {
+    float: right;
+    cursor: pointer;
+  }
+</style>
+```
+
+
+打开页面点击开启番茄钟。 你可以看到右上角的按钮， 你可以点击它来切换声音：
+
+![](imgs/6-6.png)
+
+现在我们可以在番茄钟运行时关闭声音了！
+
+如果你点击这个按钮， 它将变成另一个按钮：
+
+![](imgs/6-7.png)
+
+我们可以切换它
+
+现在想象有下面的场景： 我们启动方程式， 关闭声音， 暂停方程式， 重启方程式。 我们的当前逻辑是声音在每次方程式启动时开启。 我们将处于一种不一样的状态中 -- 方程式已经启动， 声音开始， 但是声音切换键显示要开启声音， 好像不对吧？ 但是这很好解决 -- 仅仅添加一个条件来开启 muation 而不是检查 *isworking* 状态：
+
+```
+//mutations.js
+[types.START](state) {
+  <...>
+  if (state.isWorking && state.soundEnabled) {
+    Vue.noise.start()
+  }
+},
+```
+
+完整版的代码在[chapter6/pomodoro3](https://github.com/PacktPublishing/Learning-Vue.js-2/tree/master/chapter6/pomodoro3) 文件夹。
+
+## 练习
+
+如果在番茄钟休息时也能有点音乐就好了， 创建一个在番茄钟休息时播放的音乐的插件。
+
+## 总结
+
+我在写最后一点代码时就被这张图片迷住了：
+
+![](imgs/6-8.png)
+
+一大群猫咪好像在问我： 这章什么时候结束？
+
+在本章， 你学习了插件系统如何工作。 我们使用了已有的 *resource* 插件来给哦我们的购物清单添加服务端行为。 现在我们能创建， 删除， 更新我们的鼓舞清单了。
+
+我们也创建了我们自己的插件！ 我们的插件可以产生声音来帮助我们在工作时集中精神。 我们不仅创建了它， 而且还在我们的番茄钟方程式内应用了它！ 现在我们可以在番茄钟工作时更加集中精神了！
+
+现在我们手边有两个真正的方程式了。 你知道什么才是更好的方程式吗？
+
+让方程式变得更好的方法是测试我们方程式！
+
+记住， 我们要开始测试我们的方程式了。 下一章， 我们将深入一些测试技术。 我们将用 Karms 写一些单元测试， 用 Jasmine 为断言库。 我们将用 Nightwatch 写端对端测试。 我喜欢测试方程式也希望你喜欢。 出发！
