@@ -8,14 +8,14 @@
 * 什么是声明式视图
 * Vue.js 如何定义属性， getters、 setters
 * 响应式和数据绑定如何运作
-* 什么是藏检查机制、 DOM、 虚拟DOM
+* 什么是脏检查机制、 DOM、 虚拟 DOM
 * Vue.js 1.0 和 2.0 的区别
 * 什么是可重用的组件
 * 插件、 指令、 自定义插件、 自定义指令如何在 Vue.js 中运作
 * 如何安装、 运行、 调试 Vue 方程式
 
 ## MVVM 架构模式
-你还记得我们是怎么创建 Vue 实例的吗？ 我们以关键字 new Vue({...}) 来创建实例。 你一定记得在配置项中， 我们可以把数据对象传递给绑定的元素。 数据对象是我们的模型， 而 DOM 元素是 Vue 实例绑定的地方。
+你还记得我们是怎么创建 Vue 实例的吗？ 我们以关键字 new Vue({...}) 来创建实例。 你一定记得在配置项中， 我们可以把 data 对象传递给绑定的元素。 data 对象是我们的模型， 而 DOM 元素是 Vue 实例绑定的地方。
 
 ![](imgs/2-1.png)
 
@@ -25,7 +25,7 @@ Vue 中的经典视图模型事例
 
 ![](imgs/2-2.png)
 
-Model-View-ViewModel模式简化图
+Model-View-ViewModel 模式简化图
 
 我们的模型包含数据和一些基本逻辑， 视图对之响应。 视图模型控制数据绑定， 保证在模型数据的变化会迅速反应在视图中， 反之亦然。
 
@@ -36,18 +36,18 @@ Model-View-ViewModel模式简化图
 
 我们来分析一下我们需要做什么， 我是说， 每当我们需要给一个字符串应用一些变化给 DOM 元素时，我们该怎样应用这个监听函数？ 在 *var stringVar = 'hello' ; stringVar.onchange(doSomething)* 中有太多的工作要做。
 
-我们可以包装字符串的值， 设置一些 setting 或者 getting 函数， 当每次更新字符串的时候， DOM 也随之更新。 你会怎样实现这个功能呢？ 当你想这个问题时， 我将准备一些有趣而简短的例子。
+我们可以包装字符串的值， 设置一些 setting 或者 getting 函数， 当每次更新字符串的时候， DOM 也随之更新。 你会怎样实现这个功能呢？ 当你思考这个问题时， 我将准备一些有趣而简短的例子。
 
 在你的购物清单方程式中打开你的开发者工具， 写下如下代码：
 
-```
+```js
 var obj = {};
 var text = '';
 ```
 
-我们我们 DOM 元素赋值给 h2
+将我们 DOM 元素赋值给 h2
 
-```
+```js
 var h2 = document.getElementsByTagName('h2')[0];
 ```
 
@@ -57,7 +57,7 @@ var h2 = document.getElementsByTagName('h2')[0];
 
 这个方法允许我们创建一个 *getter、 setter* 函数， 因此可以获取这些属性的变化。
 
-```
+```js
 Object.defineProperty(obj, 'text', {
   get: function ()　{
     retuen text;
@@ -79,17 +79,17 @@ Vue.js 就是应用了这个机制。 当数据被传入到 Vue 实例中时， 
 ![](imgs/2-4.png)
 在 setter 函数中调用观察方法处的断点
 
-在这个函数中， 你可以看到它正在遍历每一个属性的观察器， 并更新它们。 如果你跳过这个调用， 你将不会看到 DOM 的更新。 因为更新
-上执行的事件轮询被放在了一个定期执行的队列里。
+在这个函数中， 你可以看到它正在遍历每一个属性的观察器， 并更新它们。 如果你跳过这个调用， 你将不会看到 DOM 的更新。 因为更新上执行的事件轮询被放在了一个定期执行的队列里。
 
 找到 *runBatcherQueue* 函数， 并放入断点。 再次尝试改变标题的值。 如你所见， 这个函数将遍历正在队列里等待的观察器， 然后调用它们的 *run* 方法。 观察这个方法， 你可以看到它在比较新值和旧值。
 
+```js
+if (value !== this.value || ...)
 ```
-if (value !== this.value || ...
-```
+
 然后会启动一个回掉
 
-```
+```js
 this.cb.call(this.vm, value, oldValue);
 ```
 
@@ -116,18 +116,18 @@ update: function update(value) {
 
 ## 和其他框架的比较
 
-当你尝试一个新工具时， 你一定想和其它工具或框架相比较。 你可以在 Vue.js 的官方页面找到一些深度地比较： http://vuejs.org/guide/comparison.html 。 在这些框架中我将在这里列出一些我认为重要的说明。
+当你尝试一个新工具时， 你一定想和其它工具或框架相比较一下。 你可以在 Vue.js 的官方页面找到一些深度地比较： http://vuejs.org/guide/comparison.html 。 在这些框架中我将在这里列出一些我认为重要的说明。
 
 
 ### React
-React 和 Vue 很像。 他们都使用了虚拟 DOM ， 拥有可重用的组件， 响应式数据。 它值得一提， 但是， Vue 从 2.0 才开始使用虚 DOM。 2.0 之前它使用的是真实 DOM。 2.0 版本性能远超 1.0 同时也超过 React ( http://vuejs.org/guide/comparison.html#Performance-Profiles )。
+React 和 Vue 很像。 他们都使用了虚拟 DOM ， 拥有可重用的组件， 响应式数据。 它值得一提， 但是， Vue 从 2.0 才开始使用虚拟 DOM。 2.0 之前它使用的是真实 DOM。 2.0 版本性能远超 1.0 同时也超过 React ( http://vuejs.org/guide/comparison.html#Performance-Profiles )。
 
 两个框架最大的差别在于使用组件的方式。 你可能已经知道， 在 React 中所有一切都是 JavaScript。 用 JavaScript 开发所有的东东， 甚至是模板， 方程式一直在相同的作用域里，渲染便得非常有弹性。
 
-但是， 一些需要快速原型的初级设计者， 或者是那些不想学习 JSX 的人来说， 这真是个痛点。 在 Vue 组件中， 你也可以使用 JSX， 也可以使用一般的 web 开发结构： 在 <style> 标签中写 CSS， 在 <template> 中写 HTML，在 <script> 标签中写 JavaScript 。 例如比较在 React 中写的渲染函数和在 Vue 组件的模板， 我将展示一个简单的事例来说明这些不同：
+但是， 一些需要快速原型的初级设计者， 或者是那些不想学习 JSX 的人来说， 这真是个痛点。 在 Vue 组件中， 你也可以使用 JSX， 也可以使用一般的 web 开发结构： 在 style 标签中写 CSS， 在 template 中写 HTML，在 script 标签中写 JavaScript 。 例如比较在 React 中写的渲染函数和在 Vue 组件的模板， 我将展示一个简单的事例来说明这些不同：
 
 
-```
+```js
 render () {
   return (
     <ul>
@@ -146,17 +146,17 @@ render () {
 
 使用 Vue , 你只需写一些 HTML 代码在 *template* 标签中：
 
-```
+```html
 <template>
-<ul>
- <li v-for="item in items" :class="{ 'removed': item.checked }">
- <div class="checkbox">
- <label>
- <input type="checkbox" v-model="item.checked">{{ item.text }}
- </label>
- </div>
- </li>
-</ul>
+  <ul>
+   <li v-for="item in items" :class="{ 'removed': item.checked }">
+     <div class="checkbox">
+     <label>
+      <input type="checkbox" v-model="item.checked">{{ item.text }}
+     </label>
+     </div>
+     </li>
+  </ul>
 </template>
 ```
 
@@ -164,7 +164,7 @@ render () {
 
 另一件很棒的事是 Vue 允许你在组件中使用带有作用域的样式， 只需要在 *style* 标签加上 scoped 属性。
 
-```
+```html
 <style scoped>
 </style>
 ```
@@ -196,11 +196,11 @@ Angular 1 和 Angular 2 差别很大。 Angular 2 和 Angular 1 完全不一样�
 在开始编码之前，让我们来回顾一下 Vue 的特性。 分析下什么是可重用的组件， 如何控制方程式的状态， 谈谈插件， 过滤器， 混入。 在这一部分， 我们将稍微浏览一下这些特性。 后面再深入学习。
 
 ### 可重用的组件
-既然你知道如何使用数据绑定， 也知道它如何运转， 是时候介绍另一项杀手级特性了。 Vue.js 创建的组件可以像盖房的砖块一样重用。 每个组件拥有自己作用域的样式和别的， 完全独立于其他组件。
+既然你知道如何使用数据绑定， 也知道它如何运转， 是时候介绍另一项杀手级功能了。 Vue.js 创建的组件可以像盖房的砖块一样重用。 每个组件都拥有自己属于自己的样式和模板， 完全独立于其它组件。
 
 创建组件的语法和创建 Vue 实例的语法很相似，你应该使用 *Vue.extend* 而非 *Vue* ：
 
-```
+```js
 var customComponent = Vue.extend({...})
 ```
 
@@ -212,11 +212,11 @@ Vue.js 中的自定义组件
 
 ![](imgs/2-7.png)
 
-我们购物清单方程式的三个基本项
+我们购物清单方程式的三个基本部分
 
-我们可以把三个基本项变更为组件
+我们可以把三个基本部分变为组件
 
-```
+```js
 var data ={
   items: [{text: 'Bananas', checked: true},
           {text: 'Apples', checked: false}
@@ -245,7 +245,7 @@ new Vue({
 
 现在我们来创建三个组件： ItemsComponent, ChangeTitleComponent, AddItemComponent。 它们都需要 *data* 属性。 AddItem 方法将从主要 Vue 实例转移到 ChangeTitleComponent。 所有必需的 HTML 将从 *index.html* 转移到每个组件。 所以最后，我们的脚本就像下面这样：
 
-```
+```js
 var data = {
   items: [{text: 'Bananas', checked: true},
           {text: 'Apples', checked: false}
@@ -260,12 +260,10 @@ var ItemsComponents = Vue.extend({
     return data;
   },
   template: '<ul>' +
-  ,            <li v-for="item in items"
-              :class="{'removed': item.checked }">' +
+  ,            <li v-for="item in items" :class="{'removed': item.checked }">' +
   ,              <div class="checkbox">' +
   ,               <label>' +
-  ,                <input type="checkbox"
-                   v-model="item.checked"> {{ item.text }}' +
+  ,                <input type="checkbox" v-model="item.checked"> {{ item.text }}' +
   ,               </label>' +
   ,              </div>' +
   ,            </li>' +
@@ -298,24 +296,21 @@ var AddItemComponent = Vue.extend({
     }
   },
   template:
-  '<div class="input-group">' +
-  '<input v-model="newItem" @keyup.enter="addItem"
-  placeholder="add shopping list item" type="text"
-  class="form-control">' +
-  '<span class="input-group-btn">' +
-  ' <button @click="addItem" class="btn btn-default"
-  type="button">Add! </button>' +
-  '</span>' +
-  '</div>'
+    '<div class="input-group">' +
+    '<input v-model="newItem" @keyup.enter="addItem" placeholder="add shopping list item" type="text" class="form-control">' +
+    '<span class="input-group-btn">' +
+    ' <button @click="addItem" class="btn btn-default" type="button">Add! </button>' +
+    '</span>' +
+    '</div>'
   });
 
-  // Registering components
+  // 注册 components
 
   Vue.component('items-component', ItemsComponents);
   Vue.component('change-title-component', ChangeTitleComponent);
   Vue.component('add-item-component', AddItemComponent);
 
-  // Instantiating a Vue instance
+  // 实例化  Vue
 
   new Vue({
     el: '#app',
@@ -329,27 +324,27 @@ var AddItemComponent = Vue.extend({
 
 组件化的购物清单
 
-第一个高亮区域我们将以 <add-item-component></add-itemcomponent>  标签来替换， 第二个拿 <items-component></items-component> 标签替换， 第三个拿 <change-title-component></change-title-component> 标签替换。 因此最终是这个样子的：
+第一个高亮区域我们将以 *<add-item-component></add-itemcomponent>*  标签来替换， 第二个拿 *<items-component></items-component>* 标签替换， 第三个拿 *<change-title-component></change-title-component>* 标签替换。 因此最终是这个样子的：
 
-```
+```html
 <div id="app" class="container">
   <h2>{{ title }} </h2>
   <add-item-component></add-item-component>
   <items-component></items-component>
   <div class="footer">
-  </hr>
-  <em>Change the title of your shopping list here </em>
-  <change-title-component></change-title-component>
+    </hr>
+    <em>Change the title of your shopping list here </em>
+    <change-title-component></change-title-component>
   </div>
 </div>
 ```
 
-我们将在后续章节继续深入组件， 学习更棒的方式来组织它们。
+我们将在后续章节继续深入组件， 学习用更棒的方式来组织它们。
 
 ### Vue.js 指令
 在前面的章节， 你已经学习了用指令来增强方程式的行为。
 
-你已经学习了很多指令来绑定数据到视图(*v-model, v-if, v-show...* )。 在这些指令外， Vue.js 还允许你创建自己的自定义指令。 自定义指令机制允许你自定义 DOM 与数据映射间的行为。
+你已经学习了很多指令来绑定数据到视图(*v-model, v-if, v-show...* )。 在这些指令外， Vue.js 还允许你创建自己的自定义指令。 自定义指令机制允许你自定义 DOM 与 data 映射间的行为。
 
 当注册一个自定义指令时， 你可以提供三个函数： *bind, update, unbind*。 在 *bind* 函数内， 你可以向元素附加一个事件监听器， 监听任何你需要的东东。 在 *update* 函数内， 它接收新值和旧值作为参数， 你可以在数据变化时自定义行为。 *unbind* 方法解绑所有需要解除的操作。
 
@@ -358,7 +353,7 @@ var AddItemComponent = Vue.extend({
 
 因此呢， 全新版本的自定义指令应该是这个样子地：
 
-```
+```js
 Vue.directive('my-directive', {
   bind: function() {
     //在绑定元素上执行一些预备工作
@@ -369,7 +364,7 @@ Vue.directive('my-directive', {
   unbind: function () {
     //执行一些解绑操作
   }
-  })
+})
 ```
 
 在精简版本中， 万一你想在数据变化时搞些动作， 可以只使用 *update* 方法， 它可以直接以第二个参数的形式传入指令方程：
@@ -380,17 +375,17 @@ Vue.directive('my-directive', function (el, binding) {
 })
 ```
 
-理论很棒， 但是没点真材实料就没意思了。 所以呢， 我们来看一个简单的例子， 当一个数字改变时， 计算它的平方。
+理论很棒， 但是不来点实例就没意思了。 所以呢， 我们来看一个简单的例子， 当一个数字改变时， 计算它的平方。
 
-```
+```js
 Vue.directive('square', function (el, binding) {
   el.innerHTML = Math.pow(binding.value, 2);
-  })
+})
 ```
 
 在你的模板中这样用哦，加上 *v-* 前缀：
 
-```
+```html
 <div v-square="item"></div>
 ```
 
@@ -412,7 +407,7 @@ Vue.directive('square', function (el, binding) {
 
 我们这就以前面的自定义指令来创建一个简化版的插件吧。 创建一个叫 *VueMathPlugin.js* 的文件，然后这样写哦：
 
-```
+```js
 export default {
   install: function (Vue) {
     Vue.directive('square', function (el, binding) {
@@ -426,7 +421,7 @@ export default {
 ```
 现在我们创建一个 *script.js* 文件。 加点代码。 在这个脚本中， 我们将导入 Vue 实例和 VueMathPlugin , 使用 *use* 方法来引用插件。
 
-```
+```js
 import Vue form 'vue/dist/vue.js';
 import VueMathPlugin from './VueMathPlugin.js'
 
@@ -435,12 +430,12 @@ Vue.use(VueMathPlugin);
 new Vue({
   el: '#app',
   data: {item: 49}
-  });
+});
 ```
 
 现在创建一个 *index.html* 文件来引入 *main.js* 文件(当然我们需要 Browserify 和 Babelify)。 在这个文件中，我们在 input 上增加一个 *v-model* 指令， 用于输入值。 创建两个 span 来使用 *v-square* 和 *v-sqrt* 指令：
 
-```
+```html
 <body>
  <div id="app">
   <input v-model="item"/>
@@ -454,7 +449,7 @@ new Vue({
 
 创建一个 *package.json* 文件来引入我们需要的依赖。
 
-```
+```json
 {
   "name":"vue-custom-plugin",
   "scripts": {
@@ -472,10 +467,10 @@ new Vue({
 ```
 现在安装依赖， 构建项目
 
-```
-npm install
-npm run build
-```
+
+**npm install**
+**npm run build**
+
 
 在浏览器中打开 *index.html*。 尝试改变输入框中的值。 观察效果。
 
@@ -491,7 +486,7 @@ npm run build
 当方程式达到一定体积时， 有必要来管理全局的的状态了。 受到 Flux( https://facebook.github.io/flux/) 的启发，我们有了 Vuex 来管理共享 Vue 组件中的状态。
 
 ### Tip
-别以为这很难理解哦。 实际上呢，就是些数据。 每个组件拥有它自己的数据， "方程式状态" 指的就是可以在组件中共享的数据！
+别以为这很难理解哦(●'◡'●)。 实际上呢，就是些数据。 每个组件拥有它自己的数据， "方程式状态" 指的就是可以在组件中共享的数据！
 
 ![](imgs/2-10.png)
 
@@ -499,7 +494,7 @@ Vuex 是如何管理状态更新的
 
 就像其它插件， 你需要通知 Vue 来 use 它。
 
-```
+```js
 import Vuex from 'vuex';
 import Vue from 'vue';
 
@@ -513,7 +508,7 @@ var store = new Vuex.Store({
 
 然后初始化组件， 声明实例化 store
 
-```
+```js
 new Vue({
   components: components,
   store: store
@@ -528,9 +523,7 @@ new Vue({
 
 *npm* 安装：
 
-```
-npm install -g vue-cli
-```
+**npm install -g vue-cli**
 
 各种初始化方程式的方法：
 
@@ -546,7 +539,7 @@ vue init simple
 
 ![](imgs/2-11.png)
 
-vue init webpack 和 vue init simple 的输出
+vue init simple 和 vue init webpack 的输出
 
 下面是方程式结构的区别：
 
@@ -563,32 +556,31 @@ vue init simple 和 vue init webpack 生成的文件结构差别
 
 ![](imgs/2-13.png)
 
-
 ## 安装， 使用， 调试 Vue.js 方程式
 
 在这部分我们要分析所有安装 Vue.js 的方法， 我们会创建一个在后续章节中继续开发的应用的骨架。 我们也会学习调试测试方程式的几种方法。
 
 ### 安装 Vue.js
-这里有一堆方法去安装 Vue.js ，下载脚本后引入 **HTML** 文件中的 <script> 标签中， 使用 bower , npm 或者 Vue 的 命令行工具都可以启动整个方程式。
+这里有一堆方法去安装 Vue.js ，下载脚本后引入 HTML 文件中的 script 标签中， 使用 bower , npm 或者 Vue 的 命令行工具都可以启动整个方程式。
 
 我们选一种自己最喜欢的就行， 我们开始吧。
 
 ### 独立安装
 
-下载 *vue.js*。 这里有多个版本， 简化版和开发版。 开发版在这 ( https://vuejs.org/js/vue.js) 。 简化版在这 (https://vuejs.org/js/vue.min.js ) 。
+下载 *vue.js*。 这里有多个版本， 简化版和开发版。 开发版在这 ( https://vuejs.org/js/vue.js) 。 精简版在这 (https://vuejs.org/js/vue.min.js ) 。
 
 ### Tip
 如果你是在开发环境中， 请用非压缩的版本。 你会爱上这些在控制台打出的小提示和警告的。
 
-在 <script> 标签内引入 vue.js ：
+在 script 标签内引入 vue.js ：
 
-```
+```html
 <script src="vue.js"></script>
 ```
 
 Vue 已经被注册为全局变量了， 你可以直接使用它：
 
-```
+```html
 <div id="app">
  <h1> {{ message }} </h1>
 </div>
@@ -612,7 +604,7 @@ Vue.js 可从下面 CDN 获取
 
 在你的 *script*  中加入路径即可使用
 
-```
+```html
 <script src=" https//cndjs.cloudflare.com/ajax/libs/vue/2.0.3/vue.js">
 </script>
 ```
@@ -632,23 +624,23 @@ CDN 版本有可能不与最新版同步。
 bower install vue
 ```
 
-我们的事例就像前两个一样， 只不过已经换成在 bower 文件中啦。
+我们的事例就像前两个一样， 只不过已经换成在 bower 文件中啦(●'◡'●)。
 
-```
+```html
 <script src="bower_components/vue/dist/vue.js"></script>
 ```
 
 ### CSP-compliant
 
-内容安全协议是一项标准规则， 所有的方程式应该遵守从而避免安全攻击。 如果你是为浏览器开发方程式， 你一定对这条协议很熟悉。
+内容安全协议是一项标准协议， 所有的方程式应该遵守从而避免安全攻击。 如果你是为浏览器开发方程式， 你一定对这条协议很熟悉。
 
 对那些要求兼容 CSP 的脚本环境， 这里有个特殊版本的 Vue.js https://github.com/vuejs/vue/tree/csp/dist 。
 
-我们来示范一下在 Chrome 方程式中的关于 Vue.js 的 CSP-compliant ！
+我们来示范一下在 Chrome 方程式中的关于 Vue.js 的 CSP-compliant！
 
 首先为我们的事例创建一个文件夹。 在 Chrome 方程式中最重要的是 *manifest.json* 文件， 它用于描述你的方程式。 创建并写入下面信息：
 
-```
+```json
 {
   "manifest_version": 2,
   "name": "Learning Vue.js",
@@ -667,7 +659,7 @@ bower install vue
 
 下一步来创建我们的 *main.js* 文件， 它作为 Chrome 方程式的入口。 脚本应该监听方程式的启动并打开指定大小的新窗口。 我们指定窗口大小为 500 x 300 , 在 *index.html* 打开。
 
-```
+```js
 chrome.app.runtime.onLaunched.addListener(function () {
   // 窗口居中
   var screenWidth = screen.availWidth;
@@ -689,7 +681,7 @@ chrome.app.runtime.onLaunched.addListener(function () {
 
 现在，Chrome-specific 方程式的神奇魔法已经结束， 我们需要创建我们的 *index.html* 文件， 就像前面一样写入相同的代码。
 
-```
+```html
 <html lang="en">
   <head>
   <meta charset="UTF-8">
@@ -708,7 +700,7 @@ chrome.app.runtime.onLaunched.addListener(function () {
 
 好了， 我们一起来创建 *app.js* 文件吧。
 
-```
+```js
 var data = {
   message: "Learning Vue.js"
 };
@@ -753,19 +745,19 @@ npm install vue@csp
 
 然后引用它：
 
-```
+```js
 var Vue = require("vue");
 ```
 
 如果你喜欢 ES2015 ，可以这样引入
 
-```
+```js
 import Vue from "vue"
 ```
 
 我们的 **HTML** 文件看起来是这样的：
 
-```
+```html
 <html lang="en">
   <head>
   <meta charset="UTF-8">
@@ -780,9 +772,9 @@ import Vue from "vue"
 </html>
 ```
 
-现在创建 *script.js* 他应该就像独立版或 CDN 安装的那样， 只是在 require 这里不一样。
+现在创建 *script.js* 它应该就像独立版或 CDN 安装的那样， 只是在 require 这里不一样。
 
-```
+```js
 var Vue = require('vue/dist/vue.js');
 var data = {
   message: 'Learning Vue.js'
@@ -803,7 +795,7 @@ npm install browserify --save-dev
 
 在 *package.json* 文件中， 加点脚本来启动 Browserify 。我们的 *package.json* 就像下面这样：
 
-```
+```json
 {
   "name": "learningVue",
   "scripts": {
@@ -819,13 +811,12 @@ npm install browserify --save-dev
 
 现在运行一下命令：
 
-```
-npm run build
-```
+**npm run build**
+
 
 打开 *index.html*
 
-我有个朋友在这时说： 啥？ 这么多步骤， 安装， 命令行， 说明....结果就是这样的？ 手动再见！
+我有个朋友在这时说： 啥？ 这么多步骤， 安装， 命令行， 说明....结果就是这样的？ 手动再见。
 
 如果你也这么想， 当然你以一种复杂的方法在做一件简单的事， 但是当你的方程式有更大规模的时候， 你会发现用上这些工具会把那些复杂的事会变得更加简单， 哈哈哈， 该休息下了！
 
@@ -845,9 +836,9 @@ $ npm run dev
 
 现在打开 *loaclhost:8080* 。 打开源文件， 你可以看到 *app.vue* 文件， 你还记得我们说组件就像构建我们方程式的砖块一样吗？ 记得我们在 *main.js* 中创建注册组件， 我提示你说我们将学习更加优雅地构建组件吗？  哈哈， 你现在就会知道如何以一种更棒的方法来构建组件了！
 
-找到 *import Hello from './components/Hello'* 这行。 这正好说明了组件如何在另外的组件中被使用。看看上面的模板文件， 它包含 <hello></hello> 标签。 在 **HTML** 文件中 *hello* 组件就是这样呈现的。 看看这个组件； 它在 *src/components* 文件夹中。 如你所见，这确实和我们之前做的很像。 我们来修改一下：
+找到 *import Hello from './components/Hello'* 这行。 这正好说明了组件如何在另外的组件中被使用。看看上面的模板文件， 它包含 <hello></hello> 标签。 在 **HTML** 文件中 *hello* 组件就是这样呈现的。 看看这个组件； 它在 *src/components* 文件夹中。 如你所见， 这确实和我们之前做的很像。 我们来修改一下：
 
-```
+```html
 <script>
   export default {
   data () {
@@ -855,16 +846,17 @@ $ npm run dev
     msg: "Learning Vue.js"
     }
   }
-}</script>
+}
+</script>
 ```
 
 在 *App.vue* 组件里移除除了 *hello* 标签外的模板：
 
-```
+```html
 <template>
-<div id="app">
-<hello></hello>
-</div>
+  <div id="app">
+    <hello></hello>
+  </div>
 </template>
 ```
 
@@ -916,7 +908,7 @@ const defaultTagRE = /\{\{((?:.|\n)+?)\}\}/g
 
 实际上这个正则定义了 **HTML** 模板中默认的分隔符。 分隔符里面的东东被认为是 Vue 数据 或 JavaScript 代码。 我们来修改一下！ 我们用 *% %* 来替代 *{}* ：
 
-```
+```js
 const defaultTagRE = /\%\%((?:.|\n)+?)\%\%/g
 ```
 
@@ -952,7 +944,7 @@ const defaultTagRE = /\%\%((?:.|\n)+?)\%\%/g
 
 Vue 开发者工具
 
-在这里， 我们只有一个组件 -- <Root> 。 你可以想象， 当我们有一堆组件时， 它们将会出现在 Vue 开发工具的调试盘上。 点击 <Root> 组件并检查。 你可以看到所有绑定到这个组件上的数据。 如果你想改变一些， 例如， 增加一个列表项， 切换复选框， 改变标题....所有的改变都将被传播到 Vue 开发者工具上。 你可以在右手边看到变化。 我们这就来试试， 增加一条列表项。
+在这里， 我们只有一个组件 -- Root 。 你可以想象， 当我们有一堆组件时， 它们将会出现在 Vue 开发工具的调试盘上。 点击 Root 组件并检查。 你可以看到所有绑定到这个组件上的数据。 如果你想改变一些， 例如， 增加一个列表项， 切换复选框， 改变标题....所有的改变都将被传播到 Vue 开发者工具上。 你可以在右手边看到变化。 我们这就来试试， 增加一条列表项。
 
 ![](imgs/2-19.png)
 
@@ -997,22 +989,24 @@ vue init webpack shopping-list
 
 在最后我们的 *App.vue* 文件应该像这样：
 
-```
+```html
 <template>
   <div id="app">
   </div>
 </template>
+
 <script>
 </script>
+
 <style>
 </style>
 ```
 
 打开文件看看效果， 嗯，很好。 其实你啥事都没做， 一个空白页。
 
-我们往 <template> 标签内加点东西， 查看页面， 它自动更新啦。 这是因为 *vue-hot-reload* 插件发现了你在 Vue 组件中改动， 它自动重构建了项目， 而且重新刷新了浏览器页面。 试试在 *<script>* 标签内写点东西， 比如一个未定义的变量：
+我们往 template 标签内加点东西， 查看页面， 它自动更新啦。 这是因为 *vue-hot-reload* 插件发现了你在 Vue 组件中改动， 它自动重构建了项目， 而且重新刷新了浏览器页面。 试试在 script 标签内写点东西， 比如一个未定义的变量：
 
-```
+```html
 <script>
   notDefinedVariable = 5;
 </script>
@@ -1030,9 +1024,9 @@ vue init webpack shopping-list
 
 说到质量， 我们应该准备让我们的方程式运行单元测试。
 
-幸好， Webpack 版的 *vue-cli* 已经为我们安排好了。 运行 *npm run unit* 就可以运行单元测试了， 运行 *npm e2e* 运行端对端测试。  因为 端对端测试和方程式用了相同的端口， 他俩不能同时启动。 所以， 如果你想在开发时跑测试， 你应该在 *config/index.js* 里改变端口， 或者暂停方程式。 在测试后， 我们发现测试失败了。 这是因为它检查了那些我们移除的具体元素。 打开 *test/e2e/specs* 文件夹， 清除所有我们不需要的断言。 应该看起来是这样的：
+幸好， Webpack 版的 *vue-cli* 已经为我们安排好了。 运行 *npm run unit* 就可以运行单元测试了， 运行 *npm e2e* 运行端对端测试。  因为端对端测试和方程式用了相同的端口， 它俩不能同时启动。 所以， 如果你想在开发时跑测试， 你应该在 *config/index.js* 里改变端口， 或者暂停方程式。 在测试后， 我们发现测试失败了。 这是因为它检查了那些我们移除的具体元素。 打开 *test/e2e/specs* 文件夹， 清除所有我们不需要的断言。 看起来应该是这样的：
 
-```
+```js
 module.exports = {'default e2e tests': function (browser) {
   browser
   .url('http://localhost:8080')
