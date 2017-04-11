@@ -902,7 +902,7 @@ npm run build
 
 我们再来修改一点 vue.js 的源码！ 找到 *node_modules/vue/src/compiler/parser* 文件夹， 打开 *text-parser.js* 文件， 找到下面这行：
 
-```
+```js
 const defaultTagRE = /\{\{((?:.|\n)+?)\}\}/g
 ```
 
@@ -922,7 +922,7 @@ const defaultTagRE = /\%\%((?:.|\n)+?)\%\%/g
 
 现在我们打开 *index.html* ， 用 *%%* 替代 *{{}}* ：
 
-```
+```html
 <div id="app">
   <h1>%% message %%</h1>
 </div>

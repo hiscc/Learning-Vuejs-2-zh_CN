@@ -2,7 +2,7 @@
 
 在前面一章， 你已经知道了 Vue.js 是如何运作的。 你探究了 Vue 的幕后并改动了一点 Vue.js 源码。 你学习了一些 Vue 的关键概念， 也尝试了几种安装 Vue 的方法。 我们已经启动了项目； 我们将继续开发完善。 我们也知道了如何调试测试我们的方程式。
 
-在第一章， 我们讨论了组件甚至创建了一些。 在这章， 我们将继续使用组件并时间一些有趣的指令。 换句话说， 我们要：
+在第一章， 我们讨论了组件甚至创建了一些。 在这章， 我们将继续使用组件并实践一些有趣的指令。 换句话说， 我们要：
 
 * 重返组件话题回顾组件到底是什么
 * 为我们的方程式创建组件
@@ -13,7 +13,7 @@
 
 正如你在前面章节所记得， 组件是 Vue 方程式中拥有自己作用域， 数据， 方法的特殊部分。 方程式可以使用组件并重用它。 前一章， 你知道了组件以 *Vue.extend({...})* 方法创建， 以 *Vue.component()* 语法注册。 所以为了创建使用组件我们需要这样做：
 
-```
+```js
 //创建组件
 var HelloComponent = Vue.extend({
   template: '<h1>Hello</h1>'
@@ -28,7 +28,7 @@ new Vue({
 
 我们在 **HTML** 中这样使用组件：
 
-```
+```html
 <div id='app'>
   <hello-component></hello-component>
 </div>
@@ -37,7 +37,7 @@ new Vue({
 ### Tip
 初始化及注册可以写成单个 Vue 组件的规范写法：
 
-```
+```js
 Vue.component('hello-component', {template: '<h1> Hello </h1>'});
 ```
 
@@ -56,7 +56,7 @@ Vue 可以通过 template 标签在 **HTML** 声明模板。
 
 在 **HTML** 中重写我们的事例。
 
-```
+```html
 <template id="hello">
   <h1>Hello</h1>
 </template>
@@ -64,14 +64,14 @@ Vue 可以通过 template 标签在 **HTML** 声明模板。
 
 然后再里面加上我们的组件， 我们需要一个 ID 来指定模板。
 
-```
+```js
 Vue.component('hello-component', {
   template: '#hello'
 })
 ```
 我们的整个代码看上去像这样：
 
-```
+```html
 <body>
   <template id="hello">
     <h1>Hello</h1>
@@ -103,9 +103,9 @@ var HelloComponent = Vue.extend({
 })
 ```
 
-但是这样会导致作用域泄漏， 每一个 *HelloComponent* 实例都会共享相同的 *data 和 el*。 这不是我们想要的。  这就是 Vue 为什么会明确地要求我们以函数的形式来声明这些属性。
+但是这样会导致作用域泄漏， 每一个 *HelloComponent* 实例都会共享相同的 *data* 和 *el*。 这不是我们想要的。  这就是 Vue 为什么会明确地要求我们以函数的形式来声明这些属性。
 
-```
+```js
 var HelloComponent = Vue.component('hello-component', {
   el: function () {
   return '#hello';
@@ -131,7 +131,7 @@ Vue 会在你用对象作为数据时发出警告
 
 我们可以先声明 HelloComponent 组件并包含数据及 msg 特性：
 
-```
+```js
 Vue.component('hello-component', {
     data: function () {
       return {
@@ -143,7 +143,7 @@ Vue.component('hello-component', {
 
 创建 Vue 实例并包含一些数据：
 
-```
+```js
 new Vue({
   el: '#app',
   data: {
@@ -154,7 +154,7 @@ new Vue({
 
 在我们的 **HTML** 里， 创建模板并以 ID 的形式应用到组件上：
 
-```
+```html
 //模板声明
 <template id="hello">
   <h1>{{msg}} {{user}}</h1>
@@ -165,14 +165,14 @@ Vue.component('hello-component', {
   template: '#hello',
   data: function () {
     return {
-    msg: 'Hello'
+      msg: 'Hello'
     }
   }
 });
 ```
 为了在页面中看到组件， 我们应该在 **HTML** 中调用它：
 
-```
+```html
 <div id="app">
  <hello-component></hello-component>
 </div>
@@ -189,7 +189,7 @@ Vue.component('hello-component', {
 * 在 props 特性中指明这个属性
 * 把它绑定到 hello-component 调用
 
-```
+```html
 //在组件里调用父级数据特性
 Vue.component('hello-component', {
   template: '#hello',
@@ -203,7 +203,7 @@ Vue.component('hello-component', {
 
 //向组件绑定 user 数据属性
 <div id="app">
-<hello-component v-bind:user="user"></hello-component>
+  <hello-component v-bind:user="user"></hello-component>
 </div>
 ```
 
@@ -222,17 +222,17 @@ Vue.component('hello-component', {
 
 ## 组件嵌套组件
 
-组件的完美之处在于它们可以在其它组件里面重用这就像乐高中的砖块一样！ 我们来创建另一个组件； 一个叫 **greetings** 被两个二级组件(form asking 和 hello component )组成的组件。
+组件的完美之处在于它们可以在其它组件里面重用这就像乐高中的积木一样！ 我们来创建另一个组件； 一个叫 **greetings** 由两个二级组件(form asking 和 hello component )组成的组件。
 
 我们先来声明模板：
 
-```
+```html
 <!--form 模板-->
 <template id="form">
   <div>
     <label for="name">What's your name?</label>
     <input v-model="user" type="text" id="name">
-    </div>
+  </div>
 </template>
   //saying hello 模板
 <template id="hello">
@@ -242,7 +242,7 @@ Vue.component('hello-component', {
 
 现在，我们在这些模板的基础上来注册两个 Vue 组件：
 
-```
+```js
 //注册 form 组件
 Vue.component('form-component', {
   template: '#form',
@@ -273,9 +273,9 @@ Vue.component('hello-component', {
 
 此时， 我们可以创建我们的 greetings 组件并在内使用 greetings 模板。
 
-我们在这个组件内初始化带 user 名字的数据函数：
+我们在这个组件内初始化带 user 名字的 data 函数：
 
-```
+```js
 //基于 greetings 模板创建 greetings 组件
 Vue.component('greetings-component', {
   template: '#greetings',
@@ -289,7 +289,7 @@ Vue.component('greetings-component', {
 
 在我们的主要方程式中， 调用 greetings 组件：
 
-```
+```html
 <div id="app">
   <greetings-component></greetings-component>
 </div>
@@ -297,7 +297,7 @@ Vue.component('greetings-component', {
 
 别忘了初始化 Vue 实例
 
-```
+```js
 new Vue({
   el: '#app'
 })
@@ -309,19 +309,21 @@ new Vue({
 
 一个由不同组件构成的页面
 
-尝试在 input 内改变 name 值。你会期望它改变因为我们已经绑定了它， 但是奇怪的是， 改变并未发生。 啊哦， 就是这样。 默认情况下， 所有的属性遵守单向数据绑定。 这意味着在父级作用域内的变化将通知到所有子极组件反之却会失效。 这可以防止子极组件意外破坏父级状态。 就是这样， 但是， 也可以通过调用 *events* 强迫子极组件与他们的父级通信。 具体查看 Vue 文档 https://vuejs.org/guide/components.html#Custom-Events。
+尝试在 input 内改变 name 值。你会期望它改变因为我们已经绑定了它， 但是奇怪的是， 改变并未发生。 啊哦(⊙_⊙;).___， 就是这样。 默认情况下， 所有的属性遵守单向数据绑定。 这意味着在父级作用域内的变化将通知到所有子极组件反之却会失效。 这可以防止子极组件意外破坏父级状态。 就是这样， 但是， 也可以通过调用 *events* 强迫子极组件与他们的父级通信。 具体查看 Vue 文档 https://vuejs.org/guide/components.html#Custom-Events。
 
-在我们的例子中， 我们可以在每次输入变化时向 form input 组件绑定 user 模型， 然后分发 input 事件。 我们通过使用 *v-on:input* 修饰符来完成它， 就如在这里被描述的一样  https://vuejs.org/guide/components.html#Form-Input-Components-using-Custom-Events 。
+<咚咚咚， ( •̀ ω •́ )✧ 大家快记重点。 组件间数据传递的方法>
+
+在我们的例子中， 我们可以在每次输入变化时向 form input 组件绑定 user 模型， 然后分发 input 事件。 我们通过使用 *v-on:input* 修饰符来完成它， 就如在这里描述的一样  https://vuejs.org/guide/components.html#Form-Input-Components-using-Custom-Events 。
 
 因此， 我们必须向 form-component 传入 *v-model="user"* ：
 
-```
+```html
 <form-component v-model="user"></form-component>
 ```
 
 然后， form-component 应该接收 value 属性并分发 input 事件：
 
-```
+```js
 Vue.component('form-component', {
   template: '#form',
   props: ['value'],
@@ -335,7 +337,7 @@ Vue.component('form-component', {
 
 在 form-component 模板内的输入框应该绑定 *v-on:input* 和用 *v-on:input* 修饰符的 onInput 方法：
 
-```
+```html
 <input v-bind:value="value" type="text" id="name" v-on:input="onInput">
 ```
 
@@ -343,7 +345,7 @@ Vue.component('form-component', {
 
 事实上， 在先前的 Vue 2.0 中，这种在组件和父级间双向的同步是可以通过 **sync** 修饰符来交流属性的：
 
-```
+```html
 <form-component :user.sync="user"></form-component>
 ```
 
@@ -359,7 +361,7 @@ Vue.component('form-component', {
 
 在 Vue 2.0 版本前， 这里还有其它数据绑定修饰符， *.once* 。用这个修饰符， 数据将只绑定一次， 任何其它的变化不再影响到组件的状态。 比较下面几种方式：
 
-```
+```html
 <form-component :user="user"></form-component>
 
 <form-component :user.sync="user"></form-component>
@@ -405,66 +407,67 @@ change-title-component
 
 可以在这里看一下我们以前的例子  ( https://jsfiddle.net/chudaol/vxfkxjzk/3/ )。
 
-我们来用模板和组件名重写它。 在这部分， 我们将只关心呈现层， 对于数据绑定的控制留到后面。 我们只复制粘贴方程式的部分 **HTML** 然后在我们的组件中重用。 我们的模板看起来像下面的这样：
+我们来用模板和组件名重写它。 在这部分， 我们将只关心呈现层， 对于数据绑定的控制留到后面。 我们只复制粘贴方程式的部分 **HTML** 然后在我们的组件中重用。 我们的模板看起来像是下面这样：
 
-```
+```html
 <!--add new item template-->
 <template id="add-item-template">
   <div class="input-group">
-  <input @keyup.enter="addItem" v-model="newItem"
-  placeholder="add shopping list item" type="text"
-  class="form-control">
-  <span class="input-group-btn">
-  <button @click="addItem" class="btn btn-default"
-  type="button">Add!</button>
-  </span>
+    <input @keyup.enter="addItem" v-model="newItem"
+    placeholder="add shopping list item" type="text"
+    class="form-control">
+    <span class="input-group-btn">
+      <button @click="addItem" class="btn btn-default"
+      type="button">Add!</button>
+    </span>
   </div>
 </template>
 
 <!--list item template-->
 <template id="item-template">
   <li :class="{ 'removed': item.checked }">
-  <div class="checkbox">
-  <label>
-  <input type="checkbox" v-model="item.checked"> {{ item.text }}
-  </label>
-  </div></li>
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" v-model="item.checked"> {{ item.text }}
+      </label>
+    </div>
+  </li>
 </template>
 
 <!--items list template-->
 <template id="items-template">
   <ul>
-  <item-component v-for="item in items" :item="item">
-  </item-component>
+    <item-component v-for="item in items" :item="item">
+    </item-component>
   </ul>
 </template>
 
 <!--change title template-->
 <template id="change-title-template">
   <div>
-  <em>Change the title of your shopping list here</em>
-  <input v-bind:value="value" v-on:input="onInput"/>
+    <em>Change the title of your shopping list here</em>
+    <input v-bind:value="value" v-on:input="onInput"/>
   </div>
 </template>
 ```
 
 我们的中枢组件将包含一些组件。
 
-```
+```html
 <div id="app" class="container">
   <h2>{{ title }}</h2>
   <add-item-component></add-item-component>
   <items-component :items="items"></items-component>
   <div class="footer">
     <hr/>
-    <change-title-component v-model="title"</change-title-component>
+    <change-title-component v-model="title"></change-title-component>
   </div>
 </div>
 ```
 
 如你所见， 模板的主要部分都是复制粘贴了相应的 **HTML** 代码。
 
-但是呢， 这里有很多重要的不同点。 在 list item 模板中， 作了轻微的改动。 你已经在前面学习了 *v-for* 指令。 在前面的例子中， 我们把它用在 <li> 这样的元素上。 现在你将看到我们同样把它应用在 Vue 自定义组件上。
+但是呢， 这里有很多重要的不同点。 在 list item 模板中， 做了轻微的改动。 你已经在前面学习了 *v-for* 指令。 在前面的例子中， 我们把它用在 li 这样的元素上。 现在你将看到我们同样把它应用在 Vue 自定义组件上。
 
 你同样可能观察到了在标题模板上的小变化。 现在它有了一个绑定到它身上的值， 也使用了 *v-on:input* 修饰符进行分发 *onInput* 方法。 正如你在前面所学习的， 子组件不能在没有事件系统的情况下直接影响父级数据。
 
@@ -472,7 +475,7 @@ change-title-component
 
 先看一眼我们先前做的购物清单方程式： https://jsfiddle.net/chudaol/c8LjyenL/ 。 我们来加点创建组件的代码。 我们将使用模板的 ID 来定义组件的模板特性。 同时， 别忘了从父级传入的 *props* 特性。 因此， 我们的代码如下：
 
-```
+```js
 //add item component
 Vue.component('add-item-component', {
   template: '#add-item-template',
@@ -480,7 +483,7 @@ Vue.component('add-item-component', {
     return {
       newItem: ''
     }
-}
+  }
 });
 
 //item component
@@ -494,6 +497,7 @@ Vue.component('items-component', {
   template: '#items-template',
   props: ['items']
 });
+
 //change title component
 Vue.component('change-title-component', {
   template: '#change-title-template',
@@ -508,7 +512,7 @@ Vue.component('change-title-component', {
 
 如你所见， 在每个组件的 *props* 特性中， 我们都传入了不同的数据特性。 我们同样在 *add-item-template* 组件里移入了 *newItem* 特性。 在 *change-title-template* 组件里增加了 *onInput* 方法用来分发输入事件， 所以用户的操作才会影响到父级组件。
 
-在浏览器里打开 **HTML** 文件。 界面和以前的一模一样！ 我们完成的代码可以在这里查看 https://jsfiddle.net/chudaol/xkhum2ck/1/。
+在浏览器里打开 **HTML** 文件。 界面竟和以前的一模一样(⊙o⊙)？！ 我们完成的代码可以在这里查看 https://jsfiddle.net/chudaol/xkhum2ck/1/ 。
 
 ## 练习
 
@@ -524,7 +528,7 @@ Vue.component('change-title-component', {
 
 ### 注意
 
-单文件组件以 *.vue* 结束。 想这种类型的方程式可以使用 *webpack vue* 来配置。 生成这种类型的方程式， 最简单的方法就是使用 *vue-cli* (https://github.com/vuejs-templates/webpack)。
+单文件组件以 *.vue* 结束。 想这种类型的方程式可以使用 *webpack vue* 来配置。 生成这种类型的方程式， 最简单的方法就是使用 *vue-cli* (https://github.com/vuejs-templates/webpack) 。
 
 一个 Vue 组件可以由三部分组成：
 
@@ -544,7 +548,7 @@ npm install -g vue-cli vue init webpack-simple
 
 以 Vue 组件来重写它， 创建我们的 *HelloComponent.vue* 文件， 增加如下代码：
 
-```
+```html
 <template>
   <h1>{{ msg }}</h1>
 </template>
@@ -565,9 +569,10 @@ export default {
 
 在我们的中枢脚本中， 我们需要创建 Vue app 来通知脚本使用 *HelloComponent* 组件：
 
-```
+```js
 import Vue from 'vue'
 import HelloComponent from './HelloComponent.vue'
+
 new Vue({
   el: '#app',
   components: { HelloComponent }
@@ -576,7 +581,7 @@ new Vue({
 
 我们在 *index.html* 中的标记将不会改变。 它依然需要调用 *hello-component* ：
 
-```
+```html
 <body>
   <div id="app">
     <hello-component></hello-component>
@@ -601,7 +606,7 @@ npm run dev
 ### Tip
 Webpackbin 是一项可以运行测试以 Webpack 构建的方程式的很棒的服务。 尽管还是测试版依然是一款好工具。 当然也有一些小问题， 例如， 当你下载整个项目时， 它将不会运行。
 
-## IDEs 插件
+## IDE 插件
 Vue 的创造者和贡献者也想着咱们开发者呢， 这里有一堆他们为我们开发的 IDE 插件。 你可以这里找到 https://github.com/vuejs/awesome-vue#syntaxhighlighting 。
 如果喜欢使用 WebStorm IDE, 根据下面的说明来安装 Vue 插件。
 
@@ -617,17 +622,17 @@ Vue 的创造者和贡献者也想着咱们开发者呢， 这里有一堆他们
 ## 样式和作用域
 很明显， 模板和脚本都只属于其附属的组件。 但是对于样式就不一样了。 试试在我们的 *hello* 组件中为 h1 增加一些 CSS 规则：
 
-```
+```html
 <style>
  h1 {
-   coloe: red;
+   color: red;
  }
 </style>
 ```
 
 现在， 刷新页面， **Hello!** 标题的颜色如期变成的红色。 然后在 *index.html* 文件中增加一个 h1 标签。 你可能会对这个标签同样变成了红色而感到吃惊：
 
-```
+```html
 <div id="app">
   <h1>This is a single file component demo</h1>
   <hello-component></hello-component>
@@ -640,7 +645,7 @@ Vue 的创造者和贡献者也想着咱们开发者呢， 这里有一堆他们
 
 为了使样式只对作用域内的组件起效， 我们需要在 *<style>* 标签内指明 *scoped* 特性：
 
-```
+```html
 <style scoped>
  h1 {
    color: red;
@@ -671,7 +676,7 @@ npm install jade --save-dev
 
 对于使用 *jade*, 我们需要这样：
 
-```
+```html
 <template lang="jade">
   h1 {{ msg }}
 </template>
@@ -680,7 +685,7 @@ npm install jade --save-dev
 ## CSS 预处理器
 对于 CSS 预处理器也是相同的逻辑。 例如 sass 预处理器：
 
-```
+```html
 <style lang="sass" scoped>
   $red: red;
   h1 {
@@ -701,8 +706,9 @@ npm install sass-loader node-sass --save-dev
 
 你也可能使用 JavaScript 预处理器。 就像前面两个例子， 只是加上 *lang* 标识。 别忘了安装模块！
 
-```
+```html
 > npm install coffee-loader coffee-script --save-dev
+
 <script lang="coffee">
   exports.default = data: ->
   { msg: 'Hello!' }
@@ -725,7 +731,7 @@ $ npm run dev
 
 确保你的  *index.html* 文件是这样的：
 
-```
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -743,7 +749,7 @@ $ npm run dev
 
 你的 *main.js* 应该是这样地：
 
-```
+```js
 import Vue from 'vue'
 import App from './App'
 new Vue({
@@ -759,7 +765,7 @@ new Vue({
 * ItemsComponent： 渲染并操作列表
 * ChangeTitleComponent： 改变标题
 
-我们在 *components* 文件夹内创建它们。 我们先用三个空白的部分填充它们 (<template>, <script>, and <style>) , 并在 App.vue 中正确调用。 可以在每个组件内写点东西， 这样我们好区分它们：
+我们在 *components* 文件夹内创建它们。 我们先用三个空白的部分填充它们 (template, script, style) , 并在 App.vue 中正确调用。 可以在每个组件内写点东西， 这样我们好区分它们：
 
 ![](imgs/3-9.png)
 
@@ -777,11 +783,13 @@ new Vue({
 
 在 *<script>* 标签内， 我们先导入组件并导出包含着重要组件和对购物清单返回数据函数的对象。
 
-```
+```html
 <script>
 import AddItemComponent from './components/AddItemComponent'
 import ItemsComponent from './components/ItemsComponent'
-import ChangeTitleComponent from './components/ChangeTitleComponent'export default {
+import ChangeTitleComponent from './components/ChangeTitleComponent'
+
+export default {
   components: {
     AddItemComponent,
     ItemsComponent,
@@ -810,16 +818,16 @@ import ChangeTitleComponent from './components/ChangeTitleComponent'export defau
 
 我们的模板是这样地：
 
-```
+```html
 <template>
   <div id="app" class="container">
   <h2>{{ title }}</h2>
   <add-item-component></add-item-component>
   <items-component></items-component>
-  <div class="footer">
-    <hr/>
-    <change-title-component></change-title-component>
-  </div>
+    <div class="footer">
+      <hr/>
+      <change-title-component></change-title-component>
+    </div>
   </div>
 </template>
 ```
@@ -839,7 +847,7 @@ import ChangeTitleComponent from './components/ChangeTitleComponent'export defau
 
 打开 AddItemComponent.vue 。填充 template 。 看起来是这样地：
 
-```
+```html
 <template>
   <div>
     <div class="input-group">
@@ -859,7 +867,7 @@ import ChangeTitleComponent from './components/ChangeTitleComponent'export defau
 
 我们打开 ItemComponent.vue 文件。 只是复制粘贴一些 **HTML**：
 
-```
+```html
 //ItemComponent.vue
 <template>
   <li :class="{ 'removed': item.checked }">
@@ -874,19 +882,19 @@ import ChangeTitleComponent from './components/ChangeTitleComponent'export defau
 
 同时增加 *scoped* 样式。 这个组件需要特指的 li, span 和 .remove 类。 我们复制粘贴：
 
-```
+```html
 //ItemComponent.vue
 <style scoped>
   .removed {
     color: gray;
-  }.
-  removed span {
+  }
+  .removed span {
     text-decoration: line-through;
-  }l
-  i {
+  }
+  li {
     list-style-type: none;
-  }l
-  i span {
+  }
+  li span {
     margin-left: 5px;
   }
 </style>
@@ -894,10 +902,11 @@ import ChangeTitleComponent from './components/ChangeTitleComponent'export defau
 
 现在打开 *ItemsComponents* 。 正如你所记得的，它是一个 *ItemComponent* 列表。 即使你忘记了， 我想复数的字符名字也会使你记起来吧。 为了可以使用 *ItemComponent* ，你必须在组件内导入注册 *component* 属性。 所以我们先修改脚本：
 
-```
+```html
 //ItemsComponent.vue
 <script>
 import ItemComponent from './ItemComponent'
+
 export default {
   components: {
     ItemComponent
@@ -908,13 +917,13 @@ export default {
 
 现在你可以在 template 中使用 *item-component* 了！ 你还记的怎么遍历元素吗？ 你当然记得！ 这就是我们现在打开 template 标签的原因：
 
-```
+```html
 //ItemsComponent.vue
 <template>
-<div>
-<item-component v-for="item in items" :item="item">
-</item-component>
-</div>
+  <div>
+    <item-component v-for="item in items" :item="item">
+    </item-component>
+  </div>
 </template>
 ```
 
@@ -924,17 +933,18 @@ export default {
 
 首先， 在 *App.vue* 内， 绑定 *items-component* 调用。
 
-```
+```html
 //App.vue
 <items-component :items="items"></items-component>
 ```
 
 然后为 *ItemsComponent* 增添 *props* 特性：
 
-```
+```html
 //ItemsComponent.vue
 <script>
   import ItemComponent from './ItemComponent'
+
   export default {
     components: {
       ItemComponent
@@ -958,7 +968,7 @@ export default {
 现在检查页面。 已经恢复正常了。 可以在这里查看完整的代码 [chapter3/shopping-list](https://github.com/PacktPublishing/Learning-Vue.js-2/tree/master/chapter3/shopping-list) 。
 
 ## 练习
-完成购物清单使之较以前拥有相同的功能。
+完成购物清单让它拥有和以前一样的功能。
 
 全讲完了， 我确信你能在半小时内完成练习。 参考答案在附录里。
 
@@ -987,7 +997,8 @@ export default {
 1. 打开先前的番茄钟文件夹或者基于 Webpack 模板创建一个新的
 2. 在文件夹内运行 *npm install* 和 *npm run dev*
 3. 确保你的 *index.html* 如下：
-```
+
+```html
 <!DOCTYPE html>
 <html>
   <head>
@@ -1001,7 +1012,7 @@ export default {
 ```
 4. 确保你的 *main.js* 像下面这样：
 
-```
+```js
 import Vue from 'vue'
 import App from './App'
 
@@ -1025,21 +1036,21 @@ new Vue({
 
 我只是尽早提醒你一下我们的方程式标记应该是这样的：
 
-```
+```html
 <div id="app" class="container">
   <h2>
-  <span>Pomodoro</span>
+    <span>Pomodoro</span>
 
-  // ControlsComponent
-  <button >
-    <i class="glyphicon glyphicon-play"></i>
-  </button>
-  <button >
-    <i class="glyphicon glyphicon-pause"></i>
-  </button>
-  <button >
-    <i class="glyphicon glyphicon-stop"></i>
-  </button>
+    // ControlsComponent
+    <button >
+      <i class="glyphicon glyphicon-play"></i>
+    </button>
+    <button >
+      <i class="glyphicon glyphicon-pause"></i>
+    </button>
+    <button >
+      <i class="glyphicon glyphicon-stop"></i>
+    </button>
   </h2>
 
   // StateTitleComponent
@@ -1064,7 +1075,7 @@ new Vue({
 
 ( http://goo.gl/InYm8e)。 Scarlett O'Hara 是个睿智的女人。 现在， 我们将只关注我们 *App.vue* 中的 template 标签。 剩下的事等等再做。 我们只是拷贝粘贴 **HTML** 片段来替换我们的标识内容， 用短横线隔开式的组件。 在 *App.vue* 中的模板将是这样：
 
-```
+```html
 //App.vue
 <template>
   <div id="app" class="container">
@@ -1099,7 +1110,7 @@ new Vue({
 
 因此， 当 *show* 特性改变时， <div> 会相应地改变。 想象一下在 hideing/showing 上应用 CSS 变换。 在 Vue 中你可以使用特殊的 *transition* 包装在数据变化时提供特殊的变换效果。
 
-```
+```html
 <transition name="fade">
   <div v-if="show" transition="my">hello</div>
 </transition>
@@ -1109,7 +1120,7 @@ new Vue({
 
 我们来看看我们的 *kittens* 组件上是怎么应用这些类的。 让我们为它加上 *v-if* 指令：
 
-```
+```html
 <template>
   <...>
   <kittens-component v-if="kittens"></kittens-component>
@@ -1119,12 +1130,13 @@ new Vue({
 
 当然， 我们应该在 *App.vue* 的 *<script>* 标签内加上 data 函数(把它设置为全局变量从而易于在开发者工具中调试)：
 
-```
+```html
 <script>
 // ... //
 window.data = {
   kittens: true
 };
+
 export default {
 //.....//
   data () {
@@ -1136,13 +1148,13 @@ export default {
 
 查看浏览器： 没有变化， 打开开发者工具键入：
 
-```
+```js
 data.kittens = false
 ```
 
 你将看到 *kittens* 组件在页面内消失了。 如果你键入下面的代码， 它又出现了：
 
-```
+```js
 data.kittens = true
 ```
 
@@ -1151,7 +1163,7 @@ data.kittens = true
 
 现在我们将要讨论一些 CSS 变换而非简单的 hiding/showing 。我们为我们的 *kittens* 组件应用 CSS 的 fade 变换。 为组件变化增添一些 *fade*  特性的包装：
 
-```
+```html
 <template>
   <...>
     <transition name="fade">
@@ -1163,12 +1175,12 @@ data.kittens = true
 
 现在如果我们已经为我们的类定义好了正确的规则， 将会看到一个很棒的 CSS 变换。 开动吧。 在 *<style>* 标签内添加 CSS 规则：
 
-```
+```html
 <style scoped>
   .fade-enter-active, .fade-leave-active {
     transition: opacity .5s
-  }.
-  fade-enter, .fade-leave-active {
+  }
+  .fade-enter, .fade-leave-active {
     opacity: 0
   }
 </style>
@@ -1186,4 +1198,4 @@ data.kittens = true
 
 我们也用单文件组件重写方程式并尝试了数据绑定的 CSS 变换。
 
-在下一章， 我们将深入数据绑定， 包括 CSS 和 JavaScript 变换。 我们将使用数据绑定激活我们的方程式。 最重要的是， 我们将看到更多猫咪！
+在下一章， 我们将深入数据绑定， 包括 CSS 和 JavaScript 变换。 我们将使用数据绑定激活我们的方程式。 最重要的是， 我们将看到更多猫咪(●'◡'●)！
