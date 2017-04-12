@@ -178,7 +178,7 @@ Vue.component('hello-component', {
 </div>
 ```
 
-如果你在浏览器中打开页面， 你只能看到 **Hello** ； *user* 数据属性未被绑定到组件中：
+如果你在浏览器中打开页面， 你只能看到 **Hello**； *user* 数据属性未被绑定到组件中：
 
 ![](imgs/3-2.png)
 
@@ -287,7 +287,7 @@ Vue.component('greetings-component', {
 });
 ```
 
-在我们的主要方程式中， 调用 greetings 组件：
+在我们的中枢方程式中， 调用 greetings 组件：
 
 ```html
 <div id="app">
@@ -839,7 +839,7 @@ export default {
 ### Tip
 我们将使用 Bootstrap 的 CSS 样式。 在全局 *index.html* 内引入文件：
 
-```
+```html
 <link rel="stylesheet" href=" https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 ```
 
@@ -956,7 +956,7 @@ export default {
 
 回到 *ItemComponent* 组件增加 *props* 属性：
 
-```
+```html
 //ItemComponent.vue
 <script>
 export default {
@@ -1104,7 +1104,7 @@ new Vue({
 
 想象你有一个元素只有在 *show* 特性为真值的时候才显现。 这很简单， 对吗？ 用你已经知道的 *v-if* 指令：
 
-```
+```html
 <div v-if="show">hello</div>
 ```
 
