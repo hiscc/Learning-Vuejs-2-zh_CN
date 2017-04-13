@@ -120,7 +120,7 @@ export default {
 
 ## 表达式
 
-超出意外， 但是 Vue 完全支持在花括号写表达式！ 我们来用任意一个番茄钟组件试试这些表达式。 你可以在这里查看一些实践 [chapter4/pomodoro2](https://github.com/PacktPublishing/Learning-Vuejs-2/tree/master/chapter4/pomodoro2) 。
+超出意料， 但 Vue 完全支持在花括号写表达式！ 我们来用任意一个番茄钟组件试试这些表达式。 你可以在这里查看一些实践 [chapter4/pomodoro2](https://github.com/PacktPublishing/Learning-Vuejs-2/tree/master/chapter4/pomodoro2) 。
 
 随便在一个组件内尝试下， 例如 *StateTitleComponent.vue* 文件。 我们来添加一些 JavaScript 表达式：
 
@@ -700,8 +700,7 @@ export default {
       </li>
     </ul>
     <div class="tab-content">
-      <div v-for="list in shoppinglists" class="tab-pane"
-      role="tabpanel" id="ID">
+      <div v-for="list in shoppinglists" class="tab-pane" role="tabpanel" id="ID">
         SHOPPING LIST COMPONENT
       </div>
     </div>
