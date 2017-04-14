@@ -4,11 +4,11 @@
 
 在本章， 我们将回顾 Vue 插件， 看看它们是如何工作的， 为什么必须要创建插件。 我们将使用一些已有的插件并自己再创建一个。
 
-总结起来呢， 就是一下几点：
+总结起来呢， 就是以下几点：
 
 * 理解 Vue 插件的本质
 * 在购物清单方程式里使用 resource 插件
-* 创建一个生成白， 粉， 棕的插件并在番茄钟内应用
+* 创建一个生成白， 粉， 棕声音的插件并在番茄钟内应用
 
 ## Vue 插件的本质
 
@@ -20,7 +20,7 @@ Vue 中的插件完全和用在任何作用域的插件一样： 添加功能，
 
 然后， 告诉 Vue 你要在方程式内使用它：
 
-```
+```js
 var Vue = require('vue')
 var SomePlugin = require('some-plugin')
 ```
@@ -29,7 +29,7 @@ var SomePlugin = require('some-plugin')
 
 我们也可以创建我们自己的插件。 很简单的。 你的插件必须提供一个 *install* 方法来定义一些或全局或实例的方法， 或者是一些自定义指令：
 
-```
+```js
 MyPlugin.install = function (Vue, options) {
   // 1. add global method or property
   Vue.myGlobalMethod = ...
@@ -64,7 +64,7 @@ MyPlugin.install = function (Vue, options) {
 
 创建一个叫 *db.json* 的服务器文件夹， 内容如下：
 
-```
+```json
 //shopping-list/server/db.json
 
 {
@@ -75,7 +75,7 @@ MyPlugin.install = function (Vue, options) {
 
 这将是我们的数据库。 我们在我们的 *package.json* 内添加一些脚本， 从而更容易地开始我们的服务：
 
-```
+```json
 "scripts": {
   "dev": "node build/dev-server.js ",
   "server": "node_modules/json-server/bin/index.js --watch
@@ -110,7 +110,7 @@ MyPlugin.install = function (Vue, options) {
 
 现在我们来为我们的端口创建 API 。 在 *src* 文件夹内， 创建一个叫 *api* 的二级文件夹。 在里面创建 *index.js* 文件， 导入 *vue-resource* 插件并告诉 *Vue* 来使用它：
 
-```
+```js
 //api/index.js
 import Vue from 'vue'
 import VueResource from 'vue-resource'
@@ -126,7 +126,7 @@ const ShoppingListsResource = Vue.resource('http://localhost:3000/' + 'shoppingl
 
 *ShoppingListsResource* 常量现在暴露了我们所有需要的方法(CRUD)。  通过简单地暴露 resource 我们就可以完成。 但是我们需要为每个操作导出相应的方法：
 
-```
+```js
 export default {
   fetchShoppingLists: () => {
     return ShoppingListsResource.get()
@@ -153,14 +153,14 @@ export default {
 
 在 *mutations_types.js* 内定义一个常量：
 
-```
+```js
 //mutation_types.js
 export const POPULATE_SHOPPING_LISTS = 'POPULATE_SHOPPING_LISTS'
 ```
 
 现在创建一个 mutation 。 这个 mutation 将只接收购物清单数组并分配给 *shoppinglists* 状态：
 
-```
+```js
 //mutations.js
 export default {
   [types.CHANGE_TITLE] (state, data) {
@@ -174,7 +174,7 @@ export default {
 
 好的！ 现在我们只需要一个使用 API 方法来分发 mutation 的 action 了。 在 *actions.js* 文件内导入 API并创建相应的 action 方法：
 
-```
+```js
 import { CHANGE_TITLE, POPULATE_SHOPPING_LISTS } from './mutation_types'
 import api from '../api'
 
@@ -197,7 +197,7 @@ export default {
 
 打开 *App.vue* 组件， 导入 *mapActions* 对象， 在组件的 *methods* 属性上映射 *populateShoppingLists* action， 在 *mounted* 控制器上调用。 所以我们的 *App.vue* 将会是这样的：
 
-```
+```html
 <script>
   import ShoppingListComponent from './components/ShoppingListComponent'
   import ShoppingListTitleComponent from
@@ -242,7 +242,7 @@ export default {
 
 我们必须创建一个行为来触发所有的更改。 在这个行为内， 我们应该调用更新 API 的方法。 在 *api/index.js* 内查看 更新方法； 它必须接收整个购物清单对象为参数：
 
-```
+```js
 //api/index.js
 updateShoppingList: (data) => {
   return ShoppingListsResource.update({ id: data.id }, data)
@@ -251,7 +251,7 @@ updateShoppingList: (data) => {
 
 我们来创建一个行为来接收参数为 id ，通过 ID 来取回购物列表， 调用 API 方法。 在这么做之前，在 *getters.js* 内创建一个 *getListById* 方法并在 actions 内导入它：
 
-```
+```js
 //getters.js
 import _ from 'underscore'
   export default {
@@ -267,7 +267,7 @@ import getters from './getters'
 
 现在， 我们来调用更新购物清单的行为：
 
-```
+```js
 //actions.js
 <...>
 
@@ -282,7 +282,7 @@ export default {
 
 事实上， 我们可以在 *mutations.js* 文件内删除 *findById* 方法了， 在 *getters.js* 内重用这个方法：
 
-```
+```js
 //mutations.js
 import * as types from './mutation_types'
 import getters from './getters'
@@ -301,7 +301,7 @@ export default {
 
 我们先修改 *AddItemComponent*。 我们必须在这里组件内用 *this.$store.dispatch* 方法分发 *updateList* 行为。 但是这里有个小问题 -- 我们必须把列表的 ID 传给 *updateList* 方法， 而且我们不能在这里组件里有它的引用。 但是呢， 这其实很好解决。 仅仅在组件的 *props* 添加 ID 并绑定给在组件上的调用行为。 我们的 *AddItemComponent* 组件看起来像这样：
 
-```
+```html
 //AddItemComponent.vue
 <script>
   export default {
@@ -327,7 +327,7 @@ export default {
 
 在 *ShoppingListComponent* 内， 在 *add-item-component* 调用上绑定 ID：
 
-```
+```html
 //ShoppingListComponent.vue
 <template>
   <...>
@@ -340,7 +340,7 @@ export default {
 
 现在， 我们应该给 *ChangeTitleComponent* 做相同的事。 打开 *ChangeTitleComponent.vue* 文件， 查看代码。 在 *changeTitle* action 上调用：
 
-```
+```html
 //ChangeTitleComponent.vue
 <template>
   <div>
@@ -364,7 +364,7 @@ export default {
 
 我们当然可以导入 *updateList* action 并在调用 *changeTitle* action 后调用。 但是， 在 action 内部操作会更简单。 你可能记得为了分发仓库的 action , 我们应该在仓库上以 action 的名字为参数调用 *dispatch* 方法。 所以我们在 *changeTitle* action 这么修改：
 
-```
+```js
 //actions.js
 export default {
   changeTitle: (store, data) => {
@@ -379,9 +379,9 @@ export default {
 
 我们最后需要修改的是列表项的切换属性。 我们来看看 *ItemComponent* 并决定在哪里调用 *updateList* action。
 
-我们从未 *props* 特性添加 ID 开始， 就像我们在 *AddItemComponent* 内做的一样：
+我们从为 *props* 特性添加 ID 开始， 就像我们在 *AddItemComponent* 内做的一样：
 
-```
+```html
 //ItemComponent.vue
 <script>
   export default {
@@ -392,7 +392,7 @@ export default {
 
 我们必须给组件的调用绑定 id 属性， 在 *ItemsComponent* 内完成：
 
-```
+```html
 //ItemsComponent.vue
 <template>
   <ul>
@@ -415,7 +415,7 @@ export default {
 
 这意味着我们必须为 *item-component* 绑定 id 属性：
 
-```
+```html
 //ShoppingListComponent.vue
 <template>
   <...>
@@ -426,7 +426,7 @@ export default {
 
 我们应该在 *ItemComponent* 导入 *mapActions* 对象并在 *methods* 属性上导出 *updateList* 方法：
 
-```
+```html
 //ItemComponent.vue
 <script>
   import { mapActions } from 'vuex'
@@ -441,7 +441,7 @@ export default {
 
 这不是一个简单的任务， 因为不像在其它组件内我们有事件控制器来处理变更并调用相应的函数。 在这， 我们只有类和模型绑定给复选框元素。 幸运的是， Vue 提供了一个 *watch* 选项来为我们附加监视器到任意的组件数据上， 而且可以给它们绑定处理器。 在我们的例子中， 我们想监听 *item.checked* 属性并调用行为。 所以， 仅仅在组件上添加一个 *watch* 特性：
 
-```
+```html
 //ItemComponent.vue
 <script>
   import { mapActions } from 'vuex'
@@ -465,7 +465,7 @@ export default {
 
 我们来增加几个行为来调用相应的 API 方法， 如下：
 
-```
+```js
 //actions.js
 export default {
   <...>
@@ -477,7 +477,7 @@ export default {
 
 现在我们提供了一种可视化操作。 我们在选项卡列表中通过 ＋ 操作来创建额外的选项卡， 我们用点击事件来实现。 我们将在 *App.vue* 组件中实现它。 我们已经导入了 *mapActions* 对象。 我们在 *methods* 属性上创建一个 *createShoppingList* 方法。
 
-```
+```html
 //App.vue
 <script>
   import ShoppingListComponent from './components/ShoppingListComponent'
@@ -506,7 +506,7 @@ export default {
 
 现在我们的 *App.vue* 组件已经可以访问 *createShoppingList* action, 还能再事件控制器上得到调用。 问题是哪个是数据？ *createShoppingList* 方法一直在等待接收一个发往服务器的数据。 我们来创建一个能生成新列表的方法， 在这个方法内调用 action。 但是这个方法该放在哪里呢？ 组件里的 *methods* 属性已经被 *mapActions* 辅助函数占用了。 好的， *mapActions* 方法返回方法的映射。 我们可以用本地方法来简单地扩展这个映射：
 
-```
+```js
 //App.vue
 methods: _.extend({},
   mapActions(['populateShoppingLists', 'createShoppingList']),
@@ -523,13 +523,12 @@ methods: _.extend({},
 
 现在我们仅仅需要添加一个按钮并绑定 *addShoppingList* 方法给它的点击事件。 你可以在页面的任意地方创建你自己的按钮。 我的按钮代码是这样的：
 
-```
+```html
 App.vue
 <template>
   <div id="app" class="container">
     <ul class="nav nav-tabs" role="tablist">
-      <li :class="index===0 ? 'active' : ''" v-for="(list, index) in
-      shoppinglists" role="presentation">
+      <li :class="index===0 ? 'active' : ''" v-for="(list, index) in shoppinglists" role="presentation">
       <shopping-list-title-component :id="list.id"
       :title="list.title"></shopping-list-title-component>
       </li>
@@ -565,7 +564,7 @@ App.vue
 
 实际上， 这已经成功了。 我们已经更新了服务器的信息， 但是客户端并没有意识到这个变化。 如果我们能在创建购物清单后填充清单就更好了。 当然啦， 我们可以。 回到 *actions.js* 并调用 *populateShoppingLists* action ：
 
-```
+```js
 //actions.js
 createShoppingList: (store, shoppinglist) => {
   api.addNewShoppingList(shoppinglist).then(() => {
@@ -588,7 +587,7 @@ createShoppingList: (store, shoppinglist) => {
 
 我们从添加这个行为开始。 很简单， 正如我们创建列表一样， 我们将在删除购物清单后调用 *populate* 方法， 我们的行为就像这样：
 
-```
+```js
 //action.js
 deleteShoppingList: (store, id) => {
   api.deleteShoppingList(id).then(() => {
@@ -599,7 +598,7 @@ deleteShoppingList: (store, id) => {
 
 现在让我们想想在哪加个删除按钮呢。 我更喜欢在选项卡的头部加上它。 这个组件叫 *ShoppingListTitleComponent* 。 打开它并导入 *mapActions* 辅助函数就像下面这样：
 
-```
+```html
 //ShoppingListTitleComponent.vue
 <script>
 import { mapActions } from 'vuex'
@@ -618,7 +617,7 @@ export default{
 
 现在我们来添加删除按钮并绑定 *deleteShoppingList* 方法给它的点击事件监听器。 我们将把 ID 传入这个方法中。 我们可以直接在模板内这样做：
 
-```
+```html
 //ShoppingListTitleComponent.vue
 <template>
   <a :href="href" :aria-controls="id" role="tab" data-toggle="tab">
@@ -631,7 +630,7 @@ export default{
 
 我也添加了一点点标题的样式让它看起来更棒：
 
-```
+```html
 <style scoped>
 i {
   font-size: x-small;
@@ -671,7 +670,7 @@ i {
 
 我不再造轮子了我将复制粘贴我在网上找到的代码。 当然我对这些代码非常感谢 http://noisehack.com/generate-noise-web-audio-api/ 。 正如所说的， 我们的插件就像下面这样组织：
 
-```
+```js
 // plugins/VueNoiseGenerator.js
 import _ from 'underscore'
 // Thanks to this great tutorial:
@@ -749,9 +748,9 @@ function generateBrownNoise () {
 
 现在， 我们实现了这三种声音了。 我们必须导出 *install* 方法。 这个方法接收 Vue 实例， 然后我们可以在上面创建指令和方法。 我们创建一个 *noise* 指令。 这个指令可以有三个值， *white, pink, brown* 。 通过相应声音的创建方法来调用。 我们的 *install* 方法如下：
 
-```
-// plugins/VueNoiseGeneratorPlugin.jsexport
-default {
+```js
+// plugins/VueNoiseGeneratorPlugin.js
+export default {
   install: function (Vue) {
     Vue.directive('noise', (value) => {
       var noise
@@ -777,7 +776,7 @@ default {
 
 安装后， 我们实例化 *audioContext* 并挂起它， 因为我们可不想一开始就产生这些声音。 我们需要在一些事件上实例化它们(例如，开始按钮, 暂停按钮之类的)。 我们提供方法来开始， 暂停， 停止我们的 *audioContext* 。 我们将把这三个方法包装成一个叫 *noise* 的全局 Vue 属性。 我们把这些方法命名为 *start, pause, stop*。 在 *start* 方法内， 我们要开始 *audioContext* ， 在 *pause* 和 *stop* 方法上挂起它。 所以， 我们的方法看起来就像下面这样：
 
-```
+```js
 // plugins/VueNoiseGeneratorPlugin.js
 
 export default {
@@ -806,7 +805,7 @@ export default {
 
 首先， 我们有一个声音生成器插件， 就差使用了！ 你已经知道如何来使用它额。 打开 *main.js* 文件， 导入 *VueNoiseGeneratorPlugin* ， 并告诉 Vue 来使用它：
 
-```
+```js
 import VueNoiseGeneratorPlugin from
 './plugins/VueNoiseGeneratorPlugin'
 
@@ -815,7 +814,7 @@ Vue.use(VueNoiseGeneratorPlugin)
 
 然后， 我们可以添加 *noise* 指令并在番茄钟内任意地使用 *Vue.noise* 方法。 我们绑定给 *App.vue* 组件内的主模板：
 
-```
+```html
 //App.vue
 <template>
   <div id="app" class="container" v-noise="'brown'">
@@ -828,9 +827,10 @@ Vue.use(VueNoiseGeneratorPlugin)
 
 然后， 我们在 *start* mutation 内调用 *Vue.noise.start* 方法：
 
-```
+```js
 //mutations.js
 import Vue from 'vue'
+
 <...>
 export default {
   [types.START] (state) {
@@ -839,14 +839,14 @@ export default {
       Vue.noise.start()
     }
   },
-<...>
+}
 ```
 
 查看页面并点击 start 按钮。 你将听到 brown 声音。  小心千万别吵醒你的同事也别吓到你的家人。 试着改变声音的值。
 
 剩下就是你还没有做的。 我们创建了声音开始但无法停止的机制。 我们在 *pause* 和 *stop* mutations 上调用 *Vue.noise.pause* 和 *Vue.noise.stop* 方法：
 
-```
+```js
 //mutations.js
 export default {
   <...>
@@ -863,7 +863,7 @@ export default {
 
 查看页面。 点击暂停或停止按钮， 声音被挂起了！ 我们还什么都没做呢。 记得我们的目的是在工作时有声音而不是在休息时。 所以， 我们看看再 *mutations.js* 文件内的 *togglePomodoro* 方法并添加一个通过番茄钟当前状态来开始暂停声音的机制：
 
-```
+```js
 //mutations.js
 function togglePomodoro (state, toggle) {
   if (_.isBoolean(toggle) === false) {
@@ -886,7 +886,7 @@ function togglePomodoro (state, toggle) {
 
 为声音绑定番茄钟的状态很棒。 当暂停方程式时声音也停止很棒。 但是， 在方程式运行时停止声音也很有用。 想到这些应用场景， 甚至是在方程式运行时拨打 Skype 电话。 在这些情况下， 在这类场景下， 有个声音背景可一点也不好。 我们添加一个按钮来切换声音。 以声明一个 *soundEnabled* 仓库属性并初始为 *true* 为起始点。 为这个属性创建 *getter* 。 所以看起来是这样的：
 
-```
+```js
 //store.js
 <...>
 const state = {
@@ -902,9 +902,9 @@ export default {
 }
 ```
 
-现在我们必须提供一种机制来切换声音。 我们来为它创建 mutation 方法并添加分发这个 muation 的 action。 以声明 TOGGLE_SOUND 为 mutation 类型开始：
+现在我们必须提供一种机制来切换声音。 我们来为它创建 mutation 方法并添加分发这个 mutation 的 action。 以声明 TOGGLE_SOUND 为 mutation 类型开始：
 
-```
+```js
 //mutation_types.js
 <...>
 export const TOGGLE_SOUND = 'TOGGLE_SOUND'
@@ -912,7 +912,7 @@ export const TOGGLE_SOUND = 'TOGGLE_SOUND'
 
 现在打开 *mutations.js* 添加 mutation 方法切换 *soundEnabled* 仓库属性：
 
-```
+```js
 //mutations.js
 [types.TOGGLE_SOUND] (state) {
   state.soundEnabled = !state.soundEnabled
@@ -926,7 +926,7 @@ export const TOGGLE_SOUND = 'TOGGLE_SOUND'
 
 现在我们添加分发这个 mutation 的 action：
 
-```
+```js
 //actions.js
 export default {
   <...>
@@ -938,14 +938,14 @@ export default {
 
 现在， 我们创建了所有需要的按钮！ 我们在 *ControlsComponent*  完成它。 给 methods 映射添加一个 *getter* 和 *action* ：
 
-```
+```html
 //ControlsComponent.vue
 <script>
   import { mapGetters, mapActions } from 'vuex'
 
   export default {
-  computed: mapGetters(['isStarted', 'isPaused', 'isStopped', 'isSoundEnabled']),
-  methods: mapActions(['start', 'stop', 'pause', 'toggleSound'])
+    computed: mapGetters(['isStarted', 'isPaused', 'isStopped', 'isSoundEnabled']),
+    methods: mapActions(['start', 'stop', 'pause', 'toggleSound'])
   }
 </script>
 ```
@@ -954,13 +954,13 @@ export default {
 
 我们只在方程式开始并未暂停时显示这个标志， 只有番茄钟的状态是 *working* 时显示， 这样我们就不会弄乱切换状态了。 这意味着我们需要 *v-show* 指令：
 
-```
+```js
 v-show="isStarted && !isPaused && isWorking"
 ```
 
 注意我们在这里使用 *isWorking* 属性， 它还没被导入呢。 把它加入到方法映射里：
 
-```
+```html
 //ControlsComponents.vue
 <script>
   import { mapGetters, mapActions } from 'vuex'
@@ -974,26 +974,24 @@ v-show="isStarted && !isPaused && isWorking"
 
 在这个元素上我们也使用 *glyphicon-volume-off* 和 *glyphicon-volume-on*  类。 它们将指明声音切换动作状态。 *glyphicon-volume-off* 类将在有声音时，  *glyphicon-volume-on* 类将在么声音时。 代码里这样写：
 
-```
+```js
 :class="{ 'glyphicon-volume-off': isSoundEnabled, 'glyphicon-volume-up': !isSoundEnabled }"
 ```
 
-还有一点重要的是， 我们应该在按钮被点击时调用 *toggleSound* 。 就是说我们应该给这个元素绑定点击事件：
+还有一点， 我们应该在按钮被点击时调用 *toggleSound* 。 就是说我们应该给这个元素绑定点击事件：
 
-```
+```js
 @click='toggleSound'
 ```
 
 所以呢， 整个代码看起来像这样：
 
-```
+```html
 //ControlsComponent.vue
 <template>
   <span>
     <...>
-    <i class="toggle-volume glyphicon" v-show="isStarted &&
-    !isPaused && isWorking" :class="{ 'glyphicon-volume-off':
-    isSoundEnabled, 'glyphicon-volume-up': !isSoundEnabled }"
+    <i class="toggle-volume glyphicon" v-show="isStarted && !isPaused && isWorking" :class="{ 'glyphicon-volume-off': isSoundEnabled 'glyphicon-volume-up': !isSoundEnabled }"
     @click="toggleSound"></i>
   </span>
 </template>
@@ -1001,7 +999,7 @@ v-show="isStarted && !isPaused && isWorking"
 
 我们为这个按钮再加一点样式：
 
-```
+```html
 <style scoped>
   <...>
   .toggle-volume {
@@ -1024,9 +1022,9 @@ v-show="isStarted && !isPaused && isWorking"
 
 我们可以切换它
 
-现在想象有下面的场景： 我们启动方程式， 关闭声音， 暂停方程式， 重启方程式。 我们的当前逻辑是声音在每次方程式启动时开启。 我们将处于一种不一样的状态中 -- 方程式已经启动， 声音开始， 但是声音切换键显示要开启声音， 好像不对吧？ 但是这很好解决 -- 仅仅添加一个条件来开启 muation 而不是检查 *isworking* 状态：
+现在想象有下面的场景： 我们启动方程式， 关闭声音， 暂停方程式， 重启方程式。 我们的当前逻辑是声音在每次方程式启动时开启。 我们将处于一种不一样的状态中 -- 方程式已经启动， 声音开始， 但是声音切换键显示要开启声音， 好像不对吧？ 但是这很好解决 -- 仅仅添加一个条件来开启 mutation 而不是检查 *isworking* 状态：
 
-```
+```js
 //mutations.js
 [types.START](state) {
   <...>
@@ -1050,7 +1048,7 @@ v-show="isStarted && !isPaused && isWorking"
 
 一大群猫咪好像在问我： 这章什么时候结束？
 
-在本章， 你学习了插件系统如何工作。 我们使用了已有的 *resource* 插件来给哦我们的购物清单添加服务端行为。 现在我们能创建， 删除， 更新我们的鼓舞清单了。
+在本章， 你学习了插件系统如何工作。 我们使用了已有的 *resource* 插件来给我们的购物清单添加服务端行为。 现在我们能创建， 删除， 更新我们的购物清单了。
 
 我们也创建了我们自己的插件！ 我们的插件可以产生声音来帮助我们在工作时集中精神。 我们不仅创建了它， 而且还在我们的番茄钟方程式内应用了它！ 现在我们可以在番茄钟工作时更加集中精神了！
 
