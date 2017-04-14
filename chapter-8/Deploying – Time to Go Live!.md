@@ -11,13 +11,13 @@
 
 ## 软件开发
 
-在开始部署我们的方程式前， 我们先来定义什么事软件开发：
+在开始部署我们的方程式前， 我们先来定义什么是软件开发：
 
 > "Software deployment is all of the activities that make a software system available for  use."       –
 
 > Wikipedia:  https://en.wikipedia.org/wiki/Software_deployment
 
-这个定义说， 在我们执行完所有必要的操作后， 我们的软件将提供给公众。 在我们的事例中， 当我们开发 web 方程式时， 这意味着需要一个公开的 URL， 任何人都可以通过这个 URL 来访问我们的方程式。 这是怎么办到的呢？ 最简单对的方式是提供你自己的 IP 地址给你的小伙伴们。 因此， 人们将在你的个人网络中访问你的方程式。 所以呢， 运行你的番茄钟：
+这个定义说， 在我们执行完所有必要的操作后， 我们的软件将提供给公众。 在我们的事例中， 当我们开发 web 方程式时， 这意味着需要一个公开的 URL， 任何人都可以通过这个 URL 来访问我们的方程式。 这是怎么办到的呢？ 最简单的方式是提供你自己的 IP 地址给你的小伙伴们。 因此， 人们将在你的个人网络中访问你的方程式。 所以呢， 运行你的番茄钟：
 
 **> cd <path to pomodoro>**
 **> npm run dev**
@@ -27,11 +27,11 @@
 
 **ifconfig**
 
-![](immgs/8-1.png)
+![](imgs/8-1.png)
 
 用 ifconfig 命令行查看 IP 地址
 
-吧这个地址分享给和你在统一局域网内的小伙伴们。 在我这就是 *http://192.168.1.6:8080* 。
+把这个地址分享给和你在统一局域网内的小伙伴们。 在我这就是 *http://192.168.1.6:8080* 。
 
 但是， 只有那些和你在统一局域网的小伙伴才能访问到方程式， 其他人访问不到。
 
@@ -47,10 +47,9 @@
 
 我的地址是 *http://5dcb8d46.ngrok.io* 。 我可以把这个地址分享给任何人， 它们都可以通过这个地址来访问到番茄钟方程式了！ 但是我可以让我的笔记本运行一晚上， 但我不能让它运行一辈子。 一旦我关掉网络连接， 我的方程式将不能再被访问。 所以呢， 即使我们可以一直开机， 但我不太喜欢这个网站地址。 这个地址由一些字符和数字组成， 而我希望它们是一些有意义的东东。
 
-这里有很多好的方式实现它。 我可以购买， 例如在 **AWS(Amazon
-Web Services)** 购买一个虚拟实例服务， 复制我的方程式到这个实例上，在类似 *GoDaddy* 上买个域名， 关联这个域名到购买的实例地址上， 我们就能访问啦。 很神奇吧， 但是很贵。 在我们的方程式达到一定规模时再考虑这个方案吧。
+这里有很多好的方式实现它。 我可以购买， 例如在 **AWS(AmazonWeb Services)** 购买一个虚拟实例服务， 复制我的方程式到这个实例上，在类似 *GoDaddy* 上买个域名， 关联这个域名到购买的实例地址上， 我们就能访问啦。 很神奇吧， 但是很贵。 在我们的方程式达到一定规模时再考虑这个方案吧。
 
-现在， 在本章， 我们将采用一种更便宜， 简单， 健壮的部署方案。 这就是我们为何要在 Heroku 上部署方程式的原因。 Heroku 是一个云应用平台。 首先我们需要在 GitHub 上建立我们的方程式。 你还记得部署是指让我懂得方程式可以被使用吗？ 我想在部署前这个方程式需要测试， 并通过测试。 这就是我们在部署前使用 Travis 来保证我们的方程式质量的原因。 所以， 按照下面的步骤来：
+现在， 在本章， 我们将采用一种更便宜， 简单， 健壮的部署方案。 这就是我们为何要在 Heroku 上部署方程式的原因。 Heroku 是一个云应用平台。 首先我们需要在 GitHub 上建立我们的方程式。 你还记得部署的意思是指让我的方程式可以被使用吗？ 我想在部署前让这个方程式测试， 并通过测试。 这就是我们在部署前使用 Travis 来保证我们的方程式质量的原因。 所以， 按照下面的步骤来：
 
 1. 创建 GitHub 项目， 并移入方程式。
 2. 用 Travis 持续集成。
@@ -105,7 +104,7 @@ repository on the command line**。 在番茄钟方程式内的命令行按提�
 
 为了用 Travis 持续集成， 首先你需要用你的 GitHub 帐号连接 Travis 帐号。 打开 https://travis-ci.org/ 点击 **Sign in with GitHub** 按钮：
 
-![](immgs/8-4.png)
+![](imgs/8-4.png)
 
 点击 Sign in with GitHub 按钮
 
@@ -121,13 +120,13 @@ repository on the command line**。 在番茄钟方程式内的命令行按提�
 
 选择你要跟踪的项目
 
-现在我们已经把项目连接到了 Travs 构建系统了， 所有 commit 和推送到 msater 分支的东东都将被跟踪， 我们需要告诉它在追踪到变化时改做些什么。 Travis 所有的配置都在 *.travis.yml* 文件内。 为两个项目添加 *.travis.yml* 文件。 我们至少需要告诉它 node 使用的版本。 检查你系统内 Node 的版本：
+现在我们已经把项目连接到了 Travs 构建系统了， 所有 commit 和推送到 msater 分支的东东都将被跟踪， 我们需要告诉它在追踪到变化时该做些什么。 Travis 所有的配置都在 *.travis.yml* 文件内。 为两个项目添加 *.travis.yml* 文件。 我们至少需要告诉它 node 使用的版本。 检查你系统内 Node 的版本：
 
 **node --version**
 
 我的事 *v5.11.0* 。 所以：
 
-```
+```js
 //.travis.yml
 language: node_js
 node_js:
@@ -138,7 +137,7 @@ node_js:
 
 默认情况下， 虚拟映像的 Travis 构建和测试环境没有安装浏览器。 但我们的 Selenium 测试尝试运行浏览器。 幸运的是， Travis 提供了在构建时执行命令行的机制。 可以在 *before_script* 部分设置。 我们调用必要的安装 Chrome 浏览器命令并导出 CHROME_BIN 变量。 为你的 *.travis.yml* 文件添加如下内容：
 
-```
+```js
 before_script:
 - export CHROME_BIN=/usr/bin/google-chrome
 - sudo apt-get update
@@ -149,14 +148,14 @@ before_script:
 
 正如你看到的， 为了执行安装及升级系统， 我们必须以 *sudo* 调用命令行。 Travis 在默认情况下不允许你使用 *sudo* 命令以防出现非信任的行为。 但是你可以明确告知 Travis 使用 *sudo* 。 加入下面内容：
 
-```
+```js
 sudo: required
 dist: trusty
 ```
 
 现在整个 *.travis.yml* 文件是这样的：
 
-```
+```yml
 //.travis.yml
 language: node_js
 sudo: required
@@ -185,14 +184,14 @@ before_script:
 
 Xvfb 是实现物理显示协议的展示服务器。 所有需要的图形操作都在内存中执行； 因此， 我们不需要物理显示了。 我们通过运行 Vvfb 服务为测试添加虚拟图形环境。 如果你看了 Travis 文档， 你将在这里发现这已被写入建议中： https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-ThatRequire-a-GUI 。 打开 *.travis.yml* 文件添加：
 
-```
+```js
 - export DISPLAY=:99.0
 - sh -e /etc/init.d/xvfb start
 ```
 
 完整 YML 文件如下：
 
-```
+```yml
 //.travis.yml
 language: node_js
 sudo: required
@@ -290,7 +289,7 @@ deploy** 。
 
 移除所有的依赖：
 
-```
+```json
 "dependencies": {
   "autoprefixer": "^6.4.0",
   "babel-core": "^6.0.0",
@@ -359,7 +358,7 @@ deploy** 。
 
 现在创建 *postinstall* 脚本来运行 *npm run build*：
 
-```
+```json
 "scripts": {
   <...>
   "postinstall": "npm run build"
@@ -368,7 +367,7 @@ deploy** 。
 
 创建一个 *server.js* 文件来启动 *index.html* ：
 
-```
+```js
 // server.js
 var express = require('express');
 var serveStatic = require('serve-static');
@@ -381,7 +380,7 @@ console.log('server started '+ port);
 
 好的， 现在我们只需要创建 *start* 脚本了：
 
-```
+```json
 "scripts": {
   <...>
   "postinstall": "npm run build",
@@ -407,7 +406,7 @@ console.log('server started '+ port);
 
 我们只需要合并两个服务， 在 *server.js* 内直接开启了全部服务：
 
-```
+```js
 //server.js
 var express = require('express');
 var jsonServer = require('json-server');
@@ -431,7 +430,7 @@ const ShoppingListsResource = Vue.resource('api/' + 'shoppinglists{/id}')
 
 我们也应该添加 JSON 服务给 *dev-server.js*； 否则， 我们将不能在开发模式内运行方程式。 所以打开 *build/dev-server.js* 文件， 导入 *jsonServer*：
 
-```
+```js
 //dev-server.js
 var path = require('path')
 var express = require('express')
@@ -466,11 +465,11 @@ app.use('/api', jsonServer.router('server/db.json'));
 
 我们来提供更改并推送。
 
-现在你可以等待 Travis 成功构建并自动部署在 Heroku 上或者打开你的 Heroku 仪表盘点击 **Deploy Branch** 按钮。 这有我们今天部署的两个方程式：
+现在你可以等待 Travis 成功构建并自动部署在 Heroku 上或者打开你的 Heroku 仪表盘点击 **Deploy Branch** 按钮。 这儿有我们今天部署的两个方程式：
 
 * 番茄钟： https://catodoro.herokuapp.com/
 * 购物清单： https://shopping-list-vue.herokuapp.com/
 
 在 GitHub 上找到相应的项目 https://github.com/chudaol/Pomodoro， https://github.com/chudaol/ShoppingList 。
 
-克隆， 部署。此时， 你学会了所有需要的工具， 可以把你的方程式展示给全世界了。 谢谢你一直陪着我走完这激情的旅程！
+克隆， 部署。此时， 你学会了所有需要的工具， 可以把你的方程式展示给全世界了。 谢谢你一直陪着我走完这段激情之旅！

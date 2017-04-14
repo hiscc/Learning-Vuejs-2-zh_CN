@@ -11,9 +11,9 @@
 
 ## 为啥要单元测试
 
-在写单元测试前， 我们来说说我们为啥要写单元测试呢？ 单元测试为什么很重要？ 有时在我写代码时我只想着我的代码测试覆盖率； 我想到达百分百的水平。
+在写单元测试前， 我们来说说我们为啥要写单元测试呢？ 单元测试为什么很重要？ 有时在我写代码时我只想着我的代码测试覆盖率； 我想达到百分百的水平。
 
-代码覆盖率是一项非常重要的指标， 它帮助我们理解代码流程和哪些是需要被测试的。 但是它不保证单元测试的质量。 你可以让你的代码拥有百分百的覆盖率通过测试你所有的函数， 但是如果你的断言写错了， 代码也有可能是错的。 写好单元测试需要像是搞艺术， 需要时间和耐心。 但当你的单元测试足够棒， 集中精神写一些良好的断言时， 将会由以下好处：
+代码覆盖率是一项非常重要的指标， 它帮助我们理解代码流程和哪些是需要被测试的。 但是它不保证单元测试的质量。 通过测试你所有的函数你可以让你的代码拥有百分百的覆盖率， 但是如果你的断言写错了， 代码也有可能是错的。 写好单元测试更像是搞艺术， 需要时间和耐心。 但当你的单元测试足够棒， 集中精神写一些良好的断言时， 将会有以下好处：
 
 * 帮助我们识别算法和逻辑上的错误
 * 帮助我们提升代码质量
@@ -21,7 +21,7 @@
 * 防止未来的变化破环我们的功能
 * 帮助我们控制工期
 
-易于测试的代码也易于阅读。 易于阅读的代码更加健壮可维护性也更高。 可维护性是方程式质量的标准之一。
+易于测试的代码也易于阅读。 易于阅读的代码更加健壮可维护性也更高。 可维护性是方程式质量标准之一。
 
 ## 注意
 
@@ -40,7 +40,7 @@
 
 如果你没有使用 *vue-cli webpack* 脚手架启动我们的方程式， 我们通过 *npm* 来安装所有的这些工具。 但是在本例中， 我们不需要安装。 查看你的 *package.json* 文件：
 
-```
+```json
 "devDependencies": {
   <...>
   "chai": "^3.5.0",
@@ -56,11 +56,11 @@
 }
 ```  
 
-你当然知道为简单的方程式写单元测试有多么简单。 这就像说说话一样。 函数应该返回 X 如果输入为 Y。 我期望它返回 X。
+你当然知道为简单的方程式写单元测试有多么简单。 这就像说话一样。 函数应该返回 X 如果输入为 Y。 我期望它返回 X。
 
-所以如果我们导出一个模块， 就是说， 这个函数返回两个参数的和， 这个函数的单元测试必须以两个不同的参数调用并返回一些期望值。 所以， 假设我们有这样一个函数：
+所以如果我们导出一个模块， 这个函数返回两个参数的和， 这个函数的单元测试必须以两个不同的参数调用并返回一些期望值。 所以， 假设我们有这样一个函数：
 
-```
+```js
 function sum(a, b) {
   return a + b
 }
@@ -68,7 +68,7 @@ function sum(a, b) {
 
 然后我们的单元测试可能像这样：
 
-```
+```js
 it('should follow commutative law', () => {
   let a = 2;
   let b = 3;
@@ -87,7 +87,7 @@ it('should follow commutative law', () => {
 
 ## 为 Vue 方程式进行单元测试
 
-首先， 我们来查看一些 Vue 方程式和组件的单元测试细节。 为了给组件实例写测试， 首先， 来实例化！ 很对吧？ 情况是， 我们怎样来实例化 Vue 组件来让它的方法变得既可理解既测试？ 为了测试组件的初始状态的基本断言， 你必须导入它们并断言它们的属性。 如果你想测试动态的属性--那些改变被绑定给 DOM 后的组件的属性。 你必须这样做：
+首先， 我们来查看一些 Vue 方程式和组件的单元测试细节。 为了给组件实例写测试， 首先， 来实例化！ 很对吧？ 情况是， 我们怎样来实例化 Vue 组件来让它的方法变得既可理解又可测试？ 为了测试组件的初始状态的基本断言， 你必须导入它们并断言它们的属性。 如果你想测试动态的属性 -- 那绑定给 DOM 后的组件的属性。 你必须这样做：
 
 1. 导入组件
 2. 通过把它传入 Vue 方程式来实例化它
@@ -99,7 +99,7 @@ it('should follow commutative law', () => {
 
 现在你可以使用创建好的实例并访问它的方法。 在伪代码内， 看起来就像这样：
 
-```
+```js
 import MyComponent from <path to my component>
 var vm = new Vue(MyComponent).$mount()
 ```
@@ -108,7 +108,7 @@ var vm = new Vue(MyComponent).$mount()
 
 如果你想拥有更真实的场景来测试， 你可以使用 *ref* 特性来为 *Vue* 构建组件。 这个 Vue 实例， 以一种普通的方式实例了仓库和数据， 并绑定数据项给组件。 然后， 你就可以通过 *$refs* 来访问组件实例。 这种绑定看起来像这样：
 
-```
+```js
 import store from <path to store>
 import MyComponent from <path to my component>
 
@@ -144,7 +144,7 @@ var myComponent = vm.$refs.testcomponent;
 
 所以， 如果我们有一个 *myBeautifulThing.js* 文件及其说明， 可能是这样的：
 
-```
+```js
 // myBeautifulThing.js
 export myBeautifulMethod1() {
   return 'hello beauty'
@@ -172,9 +172,9 @@ describe('myBeautifulMethod1', () => {
 
 ## 测试 actions, getters, mutations
 
-在这部分， 使用[ chapter7/shopping-list](https://github.com/PacktPublishing/Learning-Vuejs-2/tree/master/chapter7/shopping-list) 这里的代码。 别忘了运行 *npm install* 。 注意这里有两个新的 muattions： ADD_SHOPPING_LIST 和 DELETE_SHOPPING_LIST。 这些 mutations 添加新的购物列表给清单并通过它的 ID 来移除。 它们在 promise 失败处理器内的 *createShoppingList* 和 *deleteShoppingList* actions 上：
+在这部分， 使用[ chapter7/shopping-list](https://github.com/PacktPublishing/Learning-Vuejs-2/tree/master/chapter7/shopping-list) 这里的代码。 别忘了运行 *npm install* 。 注意这里有两个新的 muattions： ADD_SHOPPING_LIST 和 DELETE_SHOPPING_LIST。 这些 mutations 添加新的购物列表给清单并通过它的 ID 来移除：
 
-```
+```js
 //actions.js
 createShoppingList: (store, shoppinglist) => {
   api.addNewShoppingList(shoppinglist).then(() => {
@@ -205,13 +205,14 @@ deleteShoppingList: (store, id) => {
 
 所以呢， 准备工作后， 启动后的 spec 看起来是这样：
 
-```
+```js
 // mutations.spec.js
 import mutations from 'src/vuex/mutations'
 import { ADD_SHOPPING_LIST, DELETE_SHOPPING_LIST, POPULATE_SHOPPING_LISTS, CHANGE_TITLE } from 'src/vuex/mutation_types'
 
-describe('mutations.js', () => {var state
-beforeEach(() => {
+describe('mutations.js', () => {
+  var state
+  beforeEach(() => {
   state = {
     shoppinglists: []
   }
@@ -224,7 +225,7 @@ beforeEach(() => {
 
 再次检查它：
 
-```
+```js
 [types.ADD_SHOPPING_LIST] (state, newList) {
   state.shoppinglists.push(newList)
 },
@@ -234,16 +235,15 @@ beforeEach(() => {
 
 以创建一个有名字的 *describe* 语句开始：
 
-```
+```js
 describe('ADD_SHOPPING_LIST', () => {
 })
 ```
 
-现在， 在这个 *describe* 回掉里， 我们可以添加一些需要的断言。 让我们来想想当我们添加一个新的购物清单给购物清单数组后悔发生什么呢？ 首先， 数组的长度会增加， 里面当然有刚添加的购物清单对象啦。 这是最基本需要测试的。 我们的 *it* 函数看起来像是这样：
+现在， 在这个 *describe* 回掉里， 我们可以添加一些需要的断言。 让我们来想想当我们添加一个新的购物清单给购物清单数组后会发生什么呢？ 首先， 数组的长度会增加， 里面当然有刚添加的购物清单对象啦。 这是最基本需要测试的。 我们的 *it* 函数看起来像是这样：
 
-```
-it('should add item to the shopping list array and increase its
-length', () => {
+```js
+it('should add item to the shopping list array and increase its length', () => {
 
 //call the add_shopping_list mutations
 mutations[ADD_SHOPPING_LIST](state, {id: '1'})
@@ -258,11 +258,10 @@ expect(state.shoppinglists).to.have.length(1)
 
 创建完这个函数后， 整个 spec 代码看起来是这样的:
 
-```
+```js
 // mutations.spec.js
 import mutations from 'src/vuex/mutations'
-import { ADD_SHOPPING_LIST, DELETE_SHOPPING_LIST, POPULATE_SHOPPING_LISTS,
-CHANGE_TITLE } from 'src/vuex/mutation_types'
+import { ADD_SHOPPING_LIST, DELETE_SHOPPING_LIST, POPULATE_SHOPPING_LISTS, CHANGE_TITLE } from 'src/vuex/mutation_types'
 
 describe('mutations.js', () => {
   var state
@@ -272,8 +271,7 @@ describe('mutations.js', () => {
   })
 
   describe('ADD_SHOPPING_LIST', () => {
-    it('should add item to the shopping list array and increase its
-    length', () => {
+    it('should add item to the shopping list array and increase its length', () => {
       mutations[ADD_SHOPPING_LIST](state, {id: '1'})
       expect(state.shoppinglists).to.eql([{id: '1'}])
       expect(state.shoppinglists).to.have.length(1)
@@ -296,7 +294,7 @@ describe('mutations.js', () => {
 
 这个测试看起来就像这样：
 
-```
+```js
 it('should not add the item if item is empty', () => {
   mutations[ADD_SHOPPING_LIST](state)
   expect(state.shoppinglists).to.have.length(0)
@@ -305,13 +303,13 @@ it('should not add the item if item is empty', () => {
 
 以 *npm run unit* 命令开始测试。 哇哦！ 失败了！ 错误如下：
 
-```
+```js
 expected [ undefined ] to have a length of 0 but got 1
 ```
 
-为啥呢？ 查看对应的 mutation。 它把刚接收到的参数传给了数组。 这就是我们可以蒜煸往里面加东西的原因！ 你还记得我前面说的良好的测试可以帮助我们创建更少错误的代码吗？ 这个例子就是。 现在我们意识到我们应该在添加新项时应该添加一些检查了。 我们就来添加一些检查接收的选项是对象的检查。 打开 ADD_SHOPPING_LIST mutations 重写：
+为啥呢？ 查看对应的 mutation。 它把刚接收到的参数传给了数组。 这就是我们可以随便往里面加东西的原因！ 你还记得我前面说的良好的测试可以帮助我们创建更少错误的代码吗？ 这个例子就是。 现在我们意识到我们应该在添加新项时应该添加一些检查了。 我们就来添加一些检查接收的选项是对象的检查。 打开 ADD_SHOPPING_LIST mutations 重写：
 
-```
+```js
 //mutations.js
 [types.ADD_SHOPPING_LIST](state, newList) {
   if (_.isObject(newList)) {
@@ -328,7 +326,7 @@ expected [ undefined ] to have a length of 0 but got 1
 
 良好的单元测试具有唯一性(改变源代码后测试将失败)。 例如， 在我们添加新列表给列表数组前， 我们设置它的默认标题。 mutation 就像下面这样：
 
-```
+```js
 [types.ADD_SHOPPING_LIST](state, newList) {
   if (_.isObject(newList)) {
     newList.title = 'New Shopping List'
@@ -369,7 +367,7 @@ expected [ undefined ] to have a length of 0 but got 1
 
 现在， 你知道了哪些还需测试。 你想试试看如何报告在 *if...else* 中没有覆盖的吗？ 跳过我们第二个测试就行：
 
-```
+```js
 it.skip('should not add the item if item is empty', () => {
   mutations[ADD_SHOPPING_LIST](state)
   expect(state.shoppinglists).to.have.length(0)
@@ -398,7 +396,7 @@ I 标志出现在 *if* 语句附近表示 *if* 分支未被覆盖
 
 最后， 你的 *mutation.spec.js* 文件可能像这样 https://gist.github.com/chudaol/befd9fc5701ff72dff7fb68ef1c7f06a 。
 
-测试玩玩这些后， *mutation.js* 的覆盖率看起来很好了：
+测试完这些后， *mutation.js* 的覆盖率看起来很好了：
 
 ![](imgs/7-9.png)
 
@@ -412,7 +410,7 @@ I 标志出现在 *if* 语句附近表示 *if* 分支未被覆盖
 
 打开 *actions.js* 文件查看第一个 action 方法：
 
-```
+```js
 //actions.js
 populateShoppingLists: ({ commit }) => {
   api.fetchShoppingLists().then(response => {
@@ -423,7 +421,7 @@ populateShoppingLists: ({ commit }) => {
 
 首先， 我们先为这个函数添加一个 *return* 语句让它返回一个 promise。 这样我们就可以使用 *.then* 方法了。 我们的函数就像下面这样：
 
-```
+```js
 //actions.js
 populateShoppingLists: ({ commit }) => {
   return api.fetchShoppingLists().then(response => {
@@ -432,10 +430,10 @@ populateShoppingLists: ({ commit }) => {
 }
 ```
 
-现在， 看看这回发生什么：
+现在， 看看这会发生什么：
 1. 这个函数用 *dispatch* 方法接收 *store*。
 2. 它执行了一个 API 调用。
-3. 在完成 *fetchShoppingLists* 后， 我们的方法用  POPULATE_SHOPPING_LISTS 和 响应的数据作为参数调用仓库的 *commit* 方法
+3. 在完成 *fetchShoppingLists* 后， 我们的方法用  POPULATE_SHOPPING_LISTS 和响应的数据作为参数调用仓库的 *commit* 方法
 
 我们怎么进行单元测试呢？ 如果我们想获得请求并模拟响应， 我们可以查看 *commit* 方法是否被调用了。 步骤如下：
 
@@ -446,7 +444,7 @@ populateShoppingLists: ({ commit }) => {
 
 这意味着我们的测试看起来是这样的：
 
-```
+```js
 it('should test that commit is called with correct parameters', () => {
   actions.populateShoppingLists({ commit }).then(() => {
     expect(commit).to.have.been.calledWith(<...>)
@@ -454,9 +452,9 @@ it('should test that commit is called with correct parameters', () => {
 })
 ```
 
-问题是我们的测试是同步的， 代码将永远不会返回我们在 *.then* 回掉的内容。 幸运的是， *mocha.js* 提供异步测试。 详情请看  https://mochajs.org/#asynchronous-code  。 你唯一需要做的就是为 *it()* 传入 *done* 回掉并在测试完成时调用。 以这种方式， 我们的伪代码就像这样：
+问题是我们的测试是同步的， 代码将永远不会返回我们在 *.then* 回掉的内容。 幸运的是， *mocha.js* 提供异步测试。 详情请看  https://mochajs.org/#asynchronous-code 。 你唯一需要做的就是为 *it()* 传入 *done* 回掉并在测试完成时调用。 以这种方式， 我们的伪代码就像这样：
 
-```
+```js
 it('should test that commit is called with correct parameters',
 (done) => {
   actions.populateShoppingLists({ commit }).then(() => {
@@ -468,7 +466,7 @@ it('should test that commit is called with correct parameters',
 
 现在就编码！ 创建一个测试说明叫 *actions.spec.js* ， 写入：
 
-```
+```js
 // actions.spec.js
 import actions from 'src/vuex/actions'
 import { CHANGE_TITLE, POPULATE_SHOPPING_LISTS } from 'src/vuex/mutation_types'
@@ -481,7 +479,7 @@ describe('actions.js', () => {
 
 现在我们跟着步骤。 首先来模拟服务器响应。 创建一系列的变量在 *beforeEach* 方法内初始化：
 
-```
+```js
 //actions.spec.js
 describe('actions.js', () => {
   var lists
@@ -502,10 +500,11 @@ describe('actions.js', () => {
 
 现在， 模拟仓库的 *commit* 方法：
 
-```
+```js
 // actions.spec.js
 describe('actions.js', () => {
-  var lists, storebeforeEach(() => {
+  var lists;
+   storebeforeEach(() => {
     <...>
     //mock store commit method
     store = {
@@ -521,9 +520,9 @@ describe('actions.js', () => {
 
 现在， 我们必须监视这个 *commit* 方法从而断言它被需要的参数所调用。 我们将使用 *sinon.stub* 方法。 查看 *sinon.js* 文档  http://sinonjs.org/docs/#stubs 。 在给定函数上创建桩文件很容易。 调用 *sinon.stub* 方法并传如一个对象， 这个方法就是我们要监视的：
 
-```
+```js
 sinon.stub(store, 'commit')
-So, our beforeEach function will look like the following:
+//So, our beforeEach function will look like the following:
 beforeEach(() => {
   <...>
   // mock store commit method
@@ -539,16 +538,16 @@ beforeEach(() => {
 
 在每个方法后的内容很重要， 我们恢复了 stub， 为了让每个测试方法在一个不被其他测试影响的干净环境内运行。 对于此， 创建一个 *afterEach* 方法并添加：
 
-```
+```js
 afterEach(function () {
   //restore stub
   store.commit.restore()
 })
 ```
 
-现在我们只需要用假数据来模拟我们的服务器响应。 我们使用 Sinon 的 *fakeServer* 完成它。 查看 sinon 文档 http://sinonjs.org/docs/#fakeServer 。 我们只需要创建 *fakeServer* 并告诉它来以模拟的响应给 GET 请求：
+现在我们只需要用假数据来模拟我们的服务器响应。 我们使用 Sinon 的 *fakeServer* 完成它。 查看 sinon 文档 http://sinonjs.org/docs/#fakeServer。 我们只需要创建 *fakeServer* 并告诉它来以模拟的响应给 GET 请求：
 
-```
+```js
 describe('actions.js', () => {
   var lists, store, serverbeforeEach(() => {
     <...>
@@ -563,17 +562,17 @@ describe('actions.js', () => {
 })
 ```
 
-准备好后， 灭个测试将执行一个调用服务器响应方法的请求。
+准备好后， 每个测试将执行一个调用服务器响应方法的请求。
 
 但是， 我们通过告诉服务器来自动响应每个获取的请求来简化：
 
-```
+```js
 server.autoRespond = true
 ```
 
 所以， 我们为模拟服务器的代码是这样滴：
 
-```
+```js
 beforeEach(() => {
   <...>
   //mock server
@@ -581,14 +580,15 @@ beforeEach(() => {
   server.respondWith('GET', /shoppinglists/, xhr => {
     xhr.respond(200, {'Content-Type': 'application/json'},
     JSON.stringify(lists)
+    })
+    server.autoRespond = true
   })
-  server.autoRespond = true
 })
 ```
 
 在每个测试后的步骤非常重要， 我们恢复我们的假服务为了不影响其它测试。 添加以下方法：
 
-```
+```js
 afterEach(() => {
   //restore stubs and server mock
   store.commit.restore()
@@ -598,9 +598,8 @@ afterEach(() => {
 
 现在我们模拟的任何可以模拟的东东， 我们最后可以写点测试事例了！ 所以， 我们在 *it()* 语句创建 *done* 回掉来调用我们的 *populateShoppingLists* 方法， 检查完成的响应。 进入 *describe* 方法写下：
 
-```
-it('should call commit method with POPULATE_SHOPPING_LIST and with mocked
-lists', done => {
+```js
+it('should call commit method with POPULATE_SHOPPING_LIST and with mocked lists', done => {
   actions.populateShoppingLists(store).then(() => {
     expect(store.commit).to.have.been.calledWith(POPULATE_SHOPPING_LISTS,
     lists)
@@ -612,7 +611,7 @@ lists', done => {
 通过 *npm run unit* 运行测试。 成功了！
 现在我们必须模拟 PUT, POST, DELETE 方法的服务器响应。 这些方法不会返回任何数据； 但是， 为了能测试响应， 我们返回假的成功信息， 在每个测试内， 检查那些响应对应的数据。 在说明最上面添加如下变量：
 
-```
+```js
 var server, store, lists, successPut, successPost, successDelete
   successDelete = {'delete': true}
   successPost = {'post': true}
@@ -621,7 +620,7 @@ var server, store, lists, successPut, successPost, successDelete
 
 为我们的服务添加下面的假响应方法：
 
-```
+```js
 server.respondWith('POST', /shoppinglists/, xhr => {
   xhr.respond(200, {'Content-Type': 'application/json'},
   JSON.stringify(successPost))
@@ -638,14 +637,14 @@ server.respondWith('DELETE', /shoppinglists/, xhr => {
 
 我们来看看它是如何运转的， 例如对 *changeTitle* 方法。 在这个测试内， 我们想去测试 *commit* 方法是否会以给定的 ID 和标题来杯调用。 我们的测试：
 
-```
+```js
 describe('changeTitle', () => {
   it('should call commit method with CHANGE_TITLE string', (done) => {
     let title = 'new title'
     actions.changeTitle(store, {title: title, id: '1'}).then(() => {
-    expect(store.commit).to.have.been.calledWith(CHANGE_TITLE,
-    {title: title, id: '1'})
-    done()
+      expect(store.commit).to.have.been.calledWith(CHANGE_TITLE,
+      {title: title, id: '1'})
+      done()
     }).catch(done)
   })
 })
@@ -653,7 +652,7 @@ describe('changeTitle', () => {
 
 为了能让这个正常工作， 我们应该模拟仓库的 *dispatch* 方法， 因为它在 *changeTitle* action 内使用。 添加 *dispatch* 属性给我们的仓库模拟并返回完成的 promise：
 
-```
+```js
 // mock store commit and dispatch methods
 store = {
   commit: (method, data) => {},
@@ -676,7 +675,7 @@ store = {
 
 你记得我们为了单元测试而准备 Vue 实例吗， 我们必须导入， 初始化， mount 它。 开动起来！ 在 *test/unit/specs* 创建一个组件文件夹。 从测试 *AddItemComponent* 组件开始。 创建一个 *AddItemComponent.spec.js* 文件导入 Vue 和 *AddItemComponent*：
 
-```
+```js
 //AddItemComponent.spec.js
 import Vue from 'vue'
 import AddItemComponent from 'src/components/AddItemComponent'
@@ -688,7 +687,7 @@ describe('AddItemComponent.vue', () => {
 
 变量 *AddItemComponent* 可以被所有组件内的初始数据直接使用。 所以我们可以这样断言， 例如， 以 *newItem* 属性来初始化组件数据：
 
-```
+```js
 describe('initialization', () => {
   it('should initialize the component with empty string newItem', () => {
     expect(AddItemComponent.data()).to.eql({
@@ -702,7 +701,7 @@ describe('initialization', () => {
 
 这个组件只有一个 *addItem* 方法。 我们检查这个方法：
 
-```
+```js
 //AddItemComponent.vue
 addItem () {
   var text
@@ -718,12 +717,11 @@ addItem () {
 
 这个方法可以访问仓库， 所以， 我们必须使用另一个策略来初始化而非直接使用导入的值。 在这个事例中， 我们应该初始化 Vue 主要的组件， 把 *AddItemComponent* 作为其子极， 并传入所有需要的特性， 然后用 *$refs* 特性访问。 所以， 组件在测试方法内的初始化就像下面这样：
 
-```
+```js
 var vm, addItemComponent;
 
 vm = new Vue({
-  template: '<add-item-component :items="items" :id="id"
-  ref="additemcomponent">' +
+  template: '<add-item-component :items="items" :id="id" ref="additemcomponent">' +
   '</add-item-component>',
   components: {
     AddItemComponent
@@ -754,7 +752,7 @@ addItemComponent = vm.$refs.additemcomponent
 
 开始！ 从为 *addItem* 函数添加 describe 方法开始：
 
-```
+```js
 describe('addItem', () => {
 
 })
@@ -762,7 +760,7 @@ describe('addItem', () => {
 
 现在在我们为 *component.newItem* 分配值得地方添加 *it()* 方法， 调用 *addItem* 方法， 检查我们需要检查的：
 
-```
+```js
 //AddItemComponent.spec.js
 it('should call $emit method', () => {
   let newItem = 'Learning Vue JS'
@@ -794,7 +792,7 @@ it('should call $emit method', () => {
 
 我们以 mutations 为起点。 打开 [ chapter7/pomodoro](https://github.com/PacktPublishing/Learning-Vue.js-2/tree/master/chapter7/pomodoro) 文件夹。打开 *mutation.js* 文件查看。 这里有四个 mutations： START, STOP, PAUSE, TOGGLE_SOUND。 猜猜我们从哪一个开始。 是的， 我们以 START 方法开始。 在 *test/unit/specs* 下创建 *vuex* 二级文件夹。 添加 *mutations.spec.js* 文件。 启动测试：
 
-```
+```js
 // mutations.spec.js
 import Vue from 'vue'
 import mutations from 'src/vuex/mutations'
@@ -832,7 +830,7 @@ describe('mutations', () => {
 
 为了能测试 *start* 方法， 我们想想要怎么做。 当 start 被点击后， 我们知道方程式的 *started, paused, stopped* 状态需要获取确切的值。 我们知道方程式的间隔该开启。 我们以知道是否番茄钟的状态是 *working* ， 声音是否开启， 声音生成器插件的 start 方法应该被调用。 事实上， 这就是我们的方法具体做的：
 
-```
+```js
 [types.START] (state) {
   state.started = true
   state.paused = false
@@ -846,7 +844,7 @@ describe('mutations', () => {
 
 但是即使它没有做那些我们测试的事， 我们将迅速发现并解决问题。 我们来写我们的测试。 以定义测试所有正确设置的属性的 *it()* 方法开始。 为了确保这些属性在调用方法前未设置， 我们断言所有的属性在测试前没有被设置：
 
-```
+```js
 it('should set all the state properties correctly after start', () => {
   // ensure that all the properties are undefined
   // before calling the start method
@@ -864,9 +862,9 @@ it('should set all the state properties correctly after start', () => {
 })
 ```
 
-我们来检查 *Vue.noise。start* 方法。 我们知道它只会在 *state.isworking， state.soundEnabled* 为真时才被调用。 我们来写一个积极测试。 在这个测试内， 我们将初始化两个布尔值状态为真， 检查 *noise.start* 方法是否被调用：
+我们来检查 *Vue.noise.start* 方法。 我们知道它只会在 *state.isworking， state.soundEnabled* 为真时才被调用。 我们来写一个积极测试。 在这个测试内， 我们将初始化两个布尔值状态为真， 检查 *noise.start* 方法是否被调用：
 
-```
+```js
 it('should call Vue.noise.start method if both state.isWorking and state.soundEnabled are true', () => {
   state.isWorking = true
   state.soundEnabled = true
@@ -877,9 +875,8 @@ it('should call Vue.noise.start method if both state.isWorking and state.soundEn
 
 我们为每个状态添加两个消极测试， *isworking, soundEnabled* 为假：
 
-```
-it('should not call Vue.noise.start method if state.isWorking is not true', ()
-=> {
+```js
+it('should not call Vue.noise.start method if state.isWorking is not true', () => {
   state.isWorking = false
   state.soundEnabled = true
   mutations[types.START](state)
@@ -901,11 +898,11 @@ it('should not call Vue.noise.start method if state.soundEnabled is not true', (
 
 End-to-end (e2e) 测试是一项在整个流程内测试的机制。 在这种测试中， 不需要使用模拟和桩， 而是在真是的系统下进行测试。 完成端对端测试允许我们测试方程式的方方面面 -- APIs， 前端， 后端， 数据库， 服务器加载， 从而保证系统集成的质量。
 
-在网络方程式的例子中， 这些都通过 UI 测试。 每一个测试描述了从打开浏览器到关闭浏览器的所有步骤。 为了达到系统的功能所有执行的步骤都需要被描述。 实际上， 就像是你在你的页面上点击并操作， 但是诗自动化的而且更迅速。 在这部分， 我们将看看 Selenium webdriver 是什么， Nightwatch 是什么， 如何使用它们来为我们的方程式创建端对端测试。
+在网络方程式的例子中， 这些都通过 UI 测试。 每一个测试描述了从打开浏览器到关闭浏览器的所有步骤。 为了达到系统的功能所有执行的步骤都需要被描述。 实际上， 就像是你在你的页面上点击并操作， 但是是自动化的而且更迅速。 在这部分， 我们将看看 Selenium webdriver 是什么， Nightwatch 是什么， 如何使用它们来为我们的方程式创建端对端测试。
 
 ## Nightwatch 与端对端测试
 
-如果你自己尝试过自动化测试或你身边的人有过自动化测试， 你一定知道  Selenium --  Selenium 会打开浏览器点击， 书写， 做任何人类做的事， 而且是以平行的， 良好分布的， 可维护的， 跨浏览器的方式。 实际上， Selenium 仅仅是一个 JAR 文件， 它包含一个 API 在浏览器上来执行不同的操作(点击 输入， 滚动等)。
+如果你自己尝试过自动化测试或你身边的人有过自动化测试， 你一定知道  Selenium --  Selenium 会打开浏览器点击， 书写， 做任何人类做的事， 而且是以平行的， 良好分布， 可维护的， 跨浏览器的方式。 实际上， Selenium 仅仅是一个 JAR 文件， 它包含一个 API 在浏览器上来执行不同的操作(点击 输入， 滚动等)。
 
 ## 注意
 
@@ -926,7 +923,7 @@ End-to-end (e2e) 测试是一项在整个流程内测试的机制。 在这种�
 
 用 *vue-cli webpack* 方法启动的 Vue 方程式已经包含了些 Nightwatch 测试的支持， 我们不必安装其它任何东西。 基本上， 每个测试说明就像这样：
 
-```
+```js
 module.exports = {
   'e2e test': function (browser) {
     browser
@@ -959,7 +956,7 @@ module.exports = {
 
 我们开始！ 在 *tests/e2e/specs* 文件夹内打开 *text.js* 文件， 删除内容添加以下内容：
 
-```
+```js
 module.exports = {
   'default e2e tests': (browser) => {
     // open the browser and check that #app is on the page
@@ -997,14 +994,14 @@ module.exports = {
 
 你可见过比这个语言还对对人类友好的？ 我们来执行检查， 看看是不是在工作一段时间后， 小猫元素出现在了屏幕上。 为了缩短测试时间， 我们设置测试时间为六秒钟。 在 *config.js* 内改变值：
 
-```
+```js
 //config.js
 export const WORKING_TIME = 0.1 * 60
 ```
 
 这个元素包含了小猫图片的 *div.well.kittens* 选择器， 所以我们将检查下可见性。 我们在小猫元素出现后的测试内检查， 图片的源包含 *thecatapi* 字符串。 测试如下：
 
-```
+```js
 'wait for kitten test': (browser) => {
   browser.url('http://localhost:8080')
     .waitForElementVisible('#app', 5000)
