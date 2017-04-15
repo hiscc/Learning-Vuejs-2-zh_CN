@@ -6,7 +6,7 @@ MVVM architecture."
 
 这是来自 Jargon 的建议， Vue.js 是一款 JavaScript 库， 它基于数据模型来创建用户界面(Views) http://jargon.js.org/_glossary/VUEJS.md 。
 
-Vue.js 官方站点( https://vuejs.org/ ) 在几个月前说 Vue.js 像是为现代 web 用户界面的响应式组件。
+Vue.js 官方站点( https://vuejs.org/ ) 在几个月前说 Vue.js 像是为现代 web 用户界面创建的响应式组件。
 
 ![](imgs/1-1.png)
 
