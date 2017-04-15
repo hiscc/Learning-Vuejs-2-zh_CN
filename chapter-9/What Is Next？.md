@@ -136,7 +136,7 @@ zero, then go to step 1."
 
 而且我们的声音也是被硬编码在方程式：
 
-```
+```html
 <template>
   <div id="app" class="container" v-noise="'brown'">
   </div>

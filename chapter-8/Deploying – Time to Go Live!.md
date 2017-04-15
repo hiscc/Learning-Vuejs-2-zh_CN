@@ -459,7 +459,7 @@ app.use('/api', jsonServer.router('server/db.json'));
 **npm run build**
 **heroku local web**
 
-在浏览器中打开 *http://localhost:5000*。 成功了！
+在浏览器中打开 http://localhost:5000。 成功了！
 
 ![](imgs/8-17.png)
 
