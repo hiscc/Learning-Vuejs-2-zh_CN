@@ -54,7 +54,7 @@ data.msg = 'Bye';
 
 在 *div* 中将毫无疑问出现 *Hello*， 在 JSFiddle 查看效果 https://jsfiddle.net/chudaol/uevnd0e4/。
 
-通过 Vue, 最简单的实现方式是使用 *{{}}*， 在我们的事例中， 我们这样写：
+通过 Vue, 最简单的实现方式是使用双大括号， 在我们的事例中， 我们这样写：
 
 ```html
 <div id="hello">{{ msg }}</div>
@@ -64,7 +64,7 @@ data.msg = 'Bye';
 
 这依旧是单向的数据绑定。 如果我们在 DOM 中改变值， 数据不会发生改变。 因此， 当我们只需要数据的值出现在 DOM 中时这将是完美的解决方案。
 
-现在， 我们非常清楚地知道： 如果我们只想在模板内使用数据对象的值， 我们应该使用 *{{}}*。
+现在， 我们非常清楚地知道： 如果我们只想在模板内使用数据对象的值， 我们应该使用双大括号。
 
 我们来继续实现我们的番茄钟方程式。 请在[chapter4/pomodoro](https://github.com/PacktPublishing/Learning-Vue.js-2/tree/master/chapter4/pomodoro) 查看当前的解决方案。 如果你运行了 *npm run dev* 后，你的页面应该像这样：
 
@@ -116,7 +116,7 @@ export default {
 
 ## 使用表达式和过滤器
 
-在前面的事例中， 我们在 *{{}}* 中用了简单的属性键来插值。 事实上， Vue 在花括号里还有更多语法。 我们来看看。
+在前面的事例中， 我们在双大括号中用了简单的属性键来插值。 事实上， Vue 在花括号里还有更多语法。 我们来看看。
 
 ## 表达式
 
@@ -124,8 +124,8 @@ export default {
 
 随便在一个组件内尝试下， 例如 *StateTitleComponent.vue* 文件。 我们来添加一些 JavaScript 表达式：
 
-```js
-{{ Math.pow(5, 2) }}
+```html
+ <!--fixed gitbook bug Math.pow(5, 2) -->
 ```
 
 事实上， 你需要取消下面这些注释：
@@ -133,7 +133,7 @@ export default {
 ```html
 //StateTitleComponent.vue
 <!--<p>-->
-  <!--{{ Math.pow(5, 2) }}-->
+  <!--fixed gitbook bug  Math.pow(5, 2)-->
 <!--</p>-->
 ```
 
@@ -199,11 +199,12 @@ export default {
 
 我们用 *isworking* 属性来有条件地渲染标题。 因此， *StateTitleComponent* 的模板是这样的：
 
-```html
+```jade
 <template>
   <div>
     <h3>
-      {{ isworking ? workingtitle : restingtitle }}
+
+      <!-- fixed gitbook bug  with deleting expression-->
     </h3>
   </div>
 </template>
@@ -230,7 +231,7 @@ export default {
 除了在模板中使用表达式， 我们还可以使用过滤器来转换表达式的值。 过滤器就是写函数。 我们创建它们并用管道符 **|** 应用它。 如果你创建了一个让字符大写的过滤器并命名为 uppercase ，为了使用它， 仅仅是在管道符后调用：
 
 ```html
-<h3> {{title | lowercase }} </h3>
+<h3> %%title | lowercase %% </h3>
 ```
 
 你可以链接很多过滤器， 例如， 如果你有了 A、 B 、C 三个过滤器， 你可以这样做 *{{ key | A | B | C }}*。 过滤器通过 *Vue.filter* 语法创建。 我们来创建我们的 *lowercase* 过滤器：
@@ -301,7 +302,7 @@ Vue.filter('leftpad', (value) => {
 
 ## 回顾并应用指令
 
-在前面的部分， 我们知道了方程式中插值并绑定到可见视图层。 尽管过滤器语法非常棒并提供了数据更改的能力， 它依然有很多限制。 例如， 用 *{{}}* 实现下面的效果：
+在前面的部分， 我们知道了方程式中插值并绑定到可见视图层。 尽管过滤器语法非常棒并提供了数据更改的能力， 它依然有很多限制。 例如， 用双大括号实现下面的效果：
 
 * 在输入框内使用插值属性， 并对相应的对应值应用变化
 * 为 data 绑定特殊的元素特性
@@ -709,7 +710,7 @@ export default {
 ```
 现在用合适的绑定来替换大写标识的部分。 记住对于绑定特性， 我们使用 *v-bind: <相应特性>* = "表达式" 的语法。
 
-对于每个锚元素的 *href* 特性， 我们必须为它定义附加到 ID 选择器的表达式： *v-bind:href = "'#' + list.id"*。 *aria-controls* 特性应该被绑定到 ID 值上。 *title* 可以使用简单的 *{{}}* 插值标记。
+对于每个锚元素的 *href* 特性， 我们必须为它定义附加到 ID 选择器的表达式： *v-bind:href = "'#' + list.id"*。 *aria-controls* 特性应该被绑定到 ID 值上。 *title* 可以使用简单的双大括号插值标记。
 
 对于 *shopping-list-component* 组件， 我们必须绑定 *title* 和 *items* 给对应的 list item。 你还记得我们在 *ShoppingListComponent* 的 *props* 内定义的 *title* 和 *items* 属性吗？ 绑定应该像是这样 *v-bind:title = list.title* 和 *v-bind:items= list.items*。
 
