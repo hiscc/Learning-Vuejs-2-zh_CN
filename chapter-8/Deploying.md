@@ -74,12 +74,12 @@ Travis 是由 GitHub 出品的允许我们连接 GitHub 项目并确保项目质
 
 Heroku 是一个部署你的方程式的云平台。 它非常易用。 你只需要创建你的方程， 并起一个有意义的名字， 连接 GitHub 上的项目， 就行啦！ 每次你推送给指定的分支， Heroku 将运行你在入口文件内提供的脚本并重新部署。
 
-它是搞可配置性的， 也提供了一个命令行界面， 所以你可以完全是用命令行而不必去 Heroku 网站指示板上查看。 我们来自己动手吧！
+它是高可配置性的， 也提供了一个命令行界面， 所以你可以完全是用命令行而不必去 Heroku 网站指示板上查看。 我们来自己动手吧！
 
 
 ## 迁移方程式到 GitHub 仓库
 
-我们以为我们的方程式创建一个 GitHub 仓库未起点。
+我们以为我们的方程式创建一个 GitHub 仓库为起点。
 
 请使用 [ chapter8/pomodoro ](https://github.com/PacktPublishing/Learning-Vue.js-2/tree/master/chapter8/pomodoro) 和 [ chapter8/shopping-list ](https://github.com/PacktPublishing/Learning-Vuejs-2/tree/master/chapter8/shopping-list) 文件。
 
@@ -89,7 +89,7 @@ Heroku 是一个部署你的方程式的云平台。 它非常易用。 你只�
 
 在 GitHub 上创建仓库
 
-一旦你点击了 **Create respository** 按钮，一个带有不同指令的页面将出现。 我们对第二段很干兴趣， **...or create a new
+一旦你点击了 **Create respository** 按钮，一个带有不同指令的页面将出现。 我们对第二段很感兴趣， **...or create a new
 repository on the command line**。 在番茄钟方程式内的命令行按提示复制， 粘贴。移除第一行：
 
 **git init**
@@ -124,7 +124,7 @@ repository on the command line**。 在番茄钟方程式内的命令行按提�
 
 **node --version**
 
-我的事 *v5.11.0* 。 所以：
+我的是 *v5.11.0* 。 所以：
 
 ```js
 //.travis.yml
@@ -258,7 +258,7 @@ deploy** 。
 
 ![](imgs/8-14.png)
 
-完事具备， 点击 **Deploy Branch** 按钮， Heroku 将执行构建， 然后你就可以在浏览器内看到方程式了。
+万事俱备， 点击 **Deploy Branch** 按钮， Heroku 将执行构建， 然后你就可以在浏览器内看到方程式了。
 
 ## 查看日志
 
@@ -276,7 +276,7 @@ deploy** 。
 
 ### 准备在 Heroku 上运行方程式
 
-我们可以通过日志文件来集中信息。 在部署前需要一下几个步骤：
+我们可以通过日志文件来集中信息。 在部署前需要以下几个步骤：
 
 * 运行 *npm install* 脚本来加载依赖
 * 运行 *npm start* 脚本开启服务
