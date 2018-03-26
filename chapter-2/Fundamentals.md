@@ -122,7 +122,7 @@ update: function update(value) {
 ### React
 React 和 Vue 很像。 他们都使用了虚拟 DOM ， 拥有可重用的组件， 响应式数据。 它值得一提， 但是， Vue 从 2.0 才开始使用虚拟 DOM。 2.0 之前它使用的是真实 DOM。 2.0 版本性能远超 1.0 同时也超过 React ( http://vuejs.org/guide/comparison.html#Performance-Profiles )。
 
-两个框架最大的差别在于使用组件的方式。 你可能已经知道， 在 React 中所有一切都是 JavaScript。 用 JavaScript 开发所有的东东， 甚至是模板， 方程式一直在相同的作用域里，渲染便得非常有弹性。
+两个框架最大的差别在于使用组件的方式。 你可能已经知道， 在 React 中所有一切都是 JavaScript。 用 JavaScript 开发所有的东东， 甚至是模板， 方程式一直运行在相同的作用域里，渲染变得非常有弹性。
 
 但是， 一些需要快速原型的初级设计者， 或者是那些不想学习 JSX 的人来说， 这真是个痛点。 在 Vue 组件中， 你也可以使用 JSX， 也可以使用一般的 web 开发结构： 在 style 标签中写 CSS， 在 template 中写 HTML，在 script 标签中写 JavaScript 。 例如比较在 React 中写的渲染函数和在 Vue 组件的模板， 我将展示一个简单的事例来说明这些不同：
 
@@ -181,7 +181,7 @@ Angular 1 和 Angular 2 差别很大。 Angular 2 和 Angular 1 完全不一样�
 这两个版本是如此不同以至于在 Vue 的官方文档中分别对这两个框架进行了比较。 但是横向对比这两个版本的 Angular ，你会发现 Vue 比它们更加友好。 对比 Angular 和 Vue 的 hello world 方程式 (https://angular.io/docs/js/latest/quickstart.html )
 (http://vuejs.org/guide/index.html#HelloWorld)
 
-> "即使没有 TypeScript, Angular 的快速指南也需要 ES2015， 18个 NPM 依赖， 4个文件， 3000多行代码来输出 Hello World."
+> "即使没有 TypeScript, Angular 的快速指南也需要 ES2015， 18 个 NPM 依赖， 4 个文件， 3000 多行代码来输出 Hello World."
 
 --http://vuejs.org/guide/comparison.html#Learning-Curve
 
@@ -400,7 +400,7 @@ Vue.directive('square', function (el, binding) {
 * 在 Vue 属性上增加 Vue实例
 * 提供一些扩展功能或 API (vue-router)
 
-插件必须通过一个可以增强或改进的全局的 Vue 对象来提供一个实例方法。 为了更好地使用插件 Vue 使用了 *use* 方法来接收插件实例( Vue.use(SomePlugin))。
+插件必须通过一个可以增强或改进的全局的 Vue 对象来提供一个实例方法。 为了更好地使用插件， Vue 使用了 *use* 方法来接收插件实例( Vue.use(SomePlugin))。
 
 ### Tip
 你可以写自己的插件来使 Vue 实例拥有自定义的行为。
